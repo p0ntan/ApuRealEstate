@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateMAUIApp", "RealEstateMAUIApp.csproj", "{50081926-6C6F-4786-8AA3-DDE3425FB407}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateMAUIApp", "RealEstateMAUIApp.csproj", "{50081926-6C6F-4786-8AA3-DDE3425FB407}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateBLL", "..\RealEstateBLL\RealEstateBLL.csproj", "{6148DD02-6875-4E83-ABA5-1B2F044DD5DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateBLL", "..\RealEstateBLL\RealEstateBLL.csproj", "{6148DD02-6875-4E83-ABA5-1B2F044DD5DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateDAL", "..\RealEstateDAL\RealEstateDAL.csproj", "{ABA447D6-67A2-4AC4-9176-4291716A01BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateDAL", "..\RealEstateDAL\RealEstateDAL.csproj", "{ABA447D6-67A2-4AC4-9176-4291716A01BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateDTO", "..\RealEstateDTO\RealEstateDTO.csproj", "{65C29BA7-E150-446A-89F7-379B110C2502}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateDTO", "..\RealEstateDTO\RealEstateDTO.csproj", "{65C29BA7-E150-446A-89F7-379B110C2502}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateService", "..\RealEstateService\RealEstateService.csproj", "{B92DCDC8-C927-46B0-BDE5-4385746802C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateService", "..\RealEstateService\RealEstateService.csproj", "{B92DCDC8-C927-46B0-BDE5-4385746802C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilitiesLib", "..\UtilitiesLib\UtilitiesLib.csproj", "{406D09DE-B439-4F4E-ADBC-9FF9624A6213}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilitiesLib", "..\UtilitiesLib\UtilitiesLib.csproj", "{406D09DE-B439-4F4E-ADBC-9FF9624A6213}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateTests", "..\RealEstateTests\RealEstateTests.csproj", "{24367802-A3F3-4662-AD52-7A6F4A53895D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{406D09DE-B439-4F4E-ADBC-9FF9624A6213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{406D09DE-B439-4F4E-ADBC-9FF9624A6213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{406D09DE-B439-4F4E-ADBC-9FF9624A6213}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24367802-A3F3-4662-AD52-7A6F4A53895D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24367802-A3F3-4662-AD52-7A6F4A53895D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24367802-A3F3-4662-AD52-7A6F4A53895D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24367802-A3F3-4662-AD52-7A6F4A53895D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
