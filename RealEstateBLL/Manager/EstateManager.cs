@@ -11,20 +11,28 @@ namespace RealEstateBLL.Manager;
 public class EstateManager : DictionaryManager<int, Estate>
 {
     /// <summary>
-    /// EstateCreator is in charge of creating estates.
+    /// Id for each estate, should be unique for each estate in manager.
     /// </summary>
-    [DataMember(Name = "EstateCreator")]
-    private EstateCreator _estateHandler = new EstateCreator();
+    [DataMember(Name = "NextID")]
+    private int _nextId = 10000;
 
     /// <summary>
-    /// Method to create a new estate by using the class EstateCreator.
+    /// Adds an item to the dictionary with the given key. Sets the unique ID of the Estate to the nextID in manager when added.
+    /// Checks that the key isn't already in dictionary and that the item is not null.
     /// </summary>
-    /// <param name="estateType">Type of estate</param>
-    /// <param name="specificTypeIndex">Index of the specific Estate type as in enums for that estate type.</param>
-    /// <returns></returns>
-    public Estate? CreateEstate(EstateType estateType, int specificTypeIndex)
+    /// <param name="key"></param>
+    /// <param name="item"></param>
+    /// <returns>True if added, false if not.</returns>
+    public override bool Add(int key, Estate item)
     {
-        return _estateHandler.CreateEstate(estateType, specificTypeIndex);
+        item.ID = _nextId;
+
+        bool itemAdded = base.Add(key, item);  // Using the base Add method.
+
+        if (itemAdded)
+            _nextId++;
+
+        return itemAdded;
     }
 
     /// <summary>
