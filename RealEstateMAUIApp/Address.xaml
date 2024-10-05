@@ -4,9 +4,11 @@
              x:Class="RealEstateMAUIApp.Address">
     <VerticalStackLayout
         MaximumWidthRequest="360"
+        Padding="5"
         Spacing="5"
+        x:Name="LayoutWrapper"
         >
-        <Label Text="Address" FontSize="Medium" />
+        <Label Text="Address" FontSize="Small" />
         <Entry x:Name="Street" Placeholder="Street" />
         <Grid ColumnSpacing="5">
             <Grid.ColumnDefinitions>
@@ -21,7 +23,6 @@
                    Grid.Column="1"/>
         </Grid>
         <Picker
-            x:Name="CountryPicker"
-            SelectedIndexChanged="CountryChange" />
+            x:Name="CountryPicker" />
     </VerticalStackLayout>
 </ContentView>

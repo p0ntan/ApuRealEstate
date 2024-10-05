@@ -7,32 +7,90 @@
         Padding="30,0"
         Spacing="25">
 
-        <local:Address x:Name="Address1" />
+        <FlexLayout
+            JustifyContent="Center"
+            Wrap="Wrap"
+            MaximumWidthRequest="720"
+            AlignItems="Start"
+            AlignContent="Stretch">
+            <VerticalStackLayout
+                Padding="5"
+                Spacing="5"
+                MinimumWidthRequest="360">
+                <Label Text="Estate Info" FontSize="Small" />
+                <Picker
+                    x:Name="EstateTypePicker"
+                    SelectedIndexChanged="EstateTypeChanged" />
+                <Picker
+                    x:Name="SpecificTypePicker"
+                    SelectedIndexChanged="SpecificTypeChanged" />
+                <Picker x:Name="LegalFormPicker" />
+            </VerticalStackLayout>
 
-        <Label
-            Text="ApuRealEstate"
-            Style="{StaticResource Headline}"
-            SemanticProperties.HeadingLevel="Level1"
-            SemanticProperties.Description="ApuRealEstate is my school project." />
+            <local:Address x:Name="EstateAddress" MinimumWidthRequest="360" />
+        </FlexLayout>
+        <FlexLayout
+            JustifyContent="Center"
+            Wrap="Wrap"
+            MaximumWidthRequest="720"
+            AlignItems="Start"
+            AlignContent="Stretch">
+            <VerticalStackLayout
+                Padding="5"
+                Spacing="5"
+                MinimumWidthRequest="360">
+                <Label Text="Estate Type Info" FontSize="Small" />
+                <Grid ColumnSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="lblType1"
+                           Text="lblType1"
+                           VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1"/>
+                    <Label x:Name="lblType2"
+                           Text="lblType2"
+                           VerticalTextAlignment="Center"
+                           Grid.Row="1"/>
+                    <Entry Grid.Column="1"
+                           Grid.Row="1"/>
+                </Grid>
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Padding="5"
+                Spacing="5"
+                MinimumWidthRequest="360">
+                <Label Text="Estate Specific Info" FontSize="Small" />
+                <Grid ColumnSpacing="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                            x:Name="lblSpecific1"
+                            Text="lblSpecific1"
+                            VerticalTextAlignment="Center" />
+                    <Entry Grid.Column="1"/>
+                    <Label x:Name="lblSpecific2"
+                               Text="lblSpecific2"
+                               VerticalTextAlignment="Center"
+                               Grid.Row="1"/>
+                    <Entry Grid.Column="1"
+                               Grid.Row="1"/>
+                </Grid>
+            </VerticalStackLayout>
+        </FlexLayout>
+        <Button Text="Test Validate" Clicked="OnAddEstate" />
 
-        <Label
-            x:Name="PickerIndex"
-            Text="Nothing chosen yet."
-            Style="{StaticResource SubHeadline}"
-            SemanticProperties.HeadingLevel="Level2" />
-
-        <Label
-            x:Name="PickerCountry"
-            Text="Nothing chosen yet."
-            Style="{StaticResource SubHeadline}"
-            SemanticProperties.HeadingLevel="Level2" />
-
-        <Button
-            x:Name="AddEstate"
-            Text="Add Estate" 
-            Clicked="OnAddEstate"
-            SemanticProperties.Hint="Counts the number of times you click"
-            HorizontalOptions="Fill" />
     </VerticalStackLayout>
 
 </ContentPage>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using RealEstateService;
 
 namespace RealEstateMAUIApp
 {
@@ -14,9 +15,11 @@ namespace RealEstateMAUIApp
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+            builder.Services.AddSingleton<EstateService>();
+            builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
