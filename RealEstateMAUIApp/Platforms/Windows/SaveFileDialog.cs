@@ -5,26 +5,39 @@ using Windows.Storage.Pickers;
 
 namespace RealEstateMAUIApp.Platforms.Windows;
 
-
+/// <summary>
+/// SaveFileDialog for windows, implements ISaveFileDialog.
+/// </summary>
 public class SaveFileDialog : ISaveFileDialog
 {
     public SaveFileDialog() { }
 
+    /// <summary>
+    /// Shows the save file dialog for a user to choose a filepath for saving file.
+    /// </summary>
+    /// <param name="fileTypes"></param>
+    /// <returns>Filepath if chosen, null if not or any errors.</returns>
     public async Task<string?> ShowSaveFileDialogAsync(Dictionary<string, List<string>> fileTypes)
     {
-        var savePicker = new FileSavePicker();
-
-        foreach (var fileType in fileTypes)
+        try
         {
-            savePicker.FileTypeChoices.Add(fileType.Key, fileType.Value);
-        }
+            var savePicker = new FileSavePicker();
 
-        var hwnd = ((MauiWinUIWindow)Application.Current.Windows[0].Handler.PlatformView).WindowHandle;
-        WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+            foreach (var fileType in fileTypes)
+            {
+                savePicker.FileTypeChoices.Add(fileType.Key, fileType.Value);
+            }
 
-        var file = await savePicker.PickSaveFileAsync();
+            var hwnd = ((MauiWinUIWindow)Application.Current.Windows[0].Handler.PlatformView).WindowHandle;
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
 
-        return file?.Path;
+            var file = await savePicker.PickSaveFileAsync();
+
+            return file?.Path;
+        } catch
+        {
+            return null;
+        } 
     }
 }
 #endif
