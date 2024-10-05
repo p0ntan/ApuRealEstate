@@ -5,10 +5,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:RealEstateMAUIApp"
     Shell.FlyoutBehavior="Disabled"
-    Title="RealEstateMAUIApp">
+    Title="Apu Real Estate">
+
+    <Shell.MenuBarItems>
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="New" Clicked="OnNewClicked" />
+            <MenuFlyoutSubItem Text="Open">
+                <MenuFlyoutItem Text="JSON" Clicked="OnOpenJSONClicked" />
+                <MenuFlyoutItem Text="XML" Clicked="OnOpenXMLClicked" />
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem Text="Save" Clicked="OnSaveClicked" />
+            <MenuFlyoutSubItem Text="Save As">
+                <MenuFlyoutItem Text="JSON" Clicked="OnSaveAsJSONClicked" />
+                <MenuFlyoutItem Text="XML" Clicked="OnSaveAsXMLClicked" />
+            </MenuFlyoutSubItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Exit" Clicked="OnExitClicked" />
+        </MenuBarItem>
+    </Shell.MenuBarItems>
 
     <ShellContent
-        Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

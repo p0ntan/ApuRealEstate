@@ -1,25 +1,27 @@
-﻿namespace RealEstateMAUIApp
+﻿// Created by Pontus Åkerberg 2024-10-05
+using RealEstateService;
+
+namespace RealEstateMAUIApp;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    int count = 0;
+
+    public MainPage()
     {
-        int count = 0;
+        InitializeComponent();
 
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+        CountryPicker.Items.Clear();
 
-        private void OnCounterClicked(object sender, EventArgs e)
-        {
-            count++;
+        string[] countries = CountryService.GetCountries();
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
+        foreach (string country in countries)
+            CountryPicker.Items.Add(country);
     }
 
+    private void CountryChange(object sender, EventArgs e)
+    {
+        PickerIndex.Text = CountryPicker.SelectedIndex.ToString();
+        PickerCountry.Text = CountryPicker.SelectedItem.ToString();
+    }
 }
