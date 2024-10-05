@@ -1,40 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:RealEstateMAUIApp"
              x:Class="RealEstateMAUIApp.MainPage">
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+    <VerticalStackLayout
+        Padding="30,0"
+        Spacing="25">
 
-            <Label
-                Text="ApuRealEstate"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1"
-                SemanticProperties.Description="ApuRealEstate is my school project." />
+        <local:Address x:Name="Address1" />
 
-            <Label
-                x:Name="PickerIndex"
-                Text="Nothing chosen yet."
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2" />
+        <Label
+            Text="ApuRealEstate"
+            Style="{StaticResource Headline}"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="ApuRealEstate is my school project." />
 
-            <Label
-                x:Name="PickerCountry"
-                Text="Nothing chosen yet."
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2" />
+        <Label
+            x:Name="PickerIndex"
+            Text="Nothing chosen yet."
+            Style="{StaticResource SubHeadline}"
+            SemanticProperties.HeadingLevel="Level2" />
 
-            <Picker
-                x:Name="CountryPicker"
-                SelectedIndexChanged="CountryChange" />
+        <Label
+            x:Name="PickerCountry"
+            Text="Nothing chosen yet."
+            Style="{StaticResource SubHeadline}"
+            SemanticProperties.HeadingLevel="Level2" />
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button
+            x:Name="AddEstate"
+            Text="Add Estate" 
+            Clicked="OnAddEstate"
+            SemanticProperties.Hint="Counts the number of times you click"
+            HorizontalOptions="Fill" />
+    </VerticalStackLayout>
 
 </ContentPage>
