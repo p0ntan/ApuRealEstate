@@ -43,6 +43,7 @@ public partial class MainPage : ContentPage
         LegalFormPicker.SelectedIndex = 0;
     }
 
+
     private void OnAddEstate(object sender, EventArgs e)
     {
         EstateAddress.ValidateAddress();
@@ -56,6 +57,8 @@ public partial class MainPage : ContentPage
     private void EstateTypeChanged(object sender, EventArgs e)
     {
         EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
+
+        SpecificTypePicker.SelectedIndex = -1;  // Set to -1 if index is out of range for other estattype
 
         switch (estateType)
         {
@@ -151,15 +154,21 @@ public partial class MainPage : ContentPage
         switch (residentialType)
         {
             case ResidentialType.Villa:
+                UpdateSpecifics("Floors", "Plot Area");
+                ImageEstate.Source = "house.jpg";
+                break;
             case ResidentialType.Rowhouse:
                 UpdateSpecifics("Floors", "Plot Area");
+                ImageEstate.Source = "rowhouse.jpg";
                 break;
             case ResidentialType.Rental:
                 UpdateSpecifics("On Floor", "Monthly Cost");
+                ImageEstate.Source = "apartment.jpg";
                 LegalFormPicker.SelectedIndex = (int)LegalForm.Rental;
                 break;
             case ResidentialType.Tenement:
                 UpdateSpecifics("On Floor", "Monthly Cost");
+                ImageEstate.Source = "apartment.jpg";
                 LegalFormPicker.SelectedIndex = (int)LegalForm.Tenement;
                 break;
         }
@@ -176,15 +185,19 @@ public partial class MainPage : ContentPage
         {
             case CommercialType.Factory:
                 UpdateSpecifics("Production Capacity", "No. of Employees");
+                ImageEstate.Source = "factory.jpg";
                 break;
             case CommercialType.Shop:
                 UpdateSpecifics("Customer Capacity", "Storage Area");
+                ImageEstate.Source = "shop.jpg";
                 break;
             case CommercialType.Hotel:
                 UpdateSpecifics("No. of Beds", "No. of Parking Spots");
+                ImageEstate.Source = "hotel.jpg";
                 break;
             case CommercialType.Warehouse:
                 UpdateSpecifics("Storage Area", "No. of Loading Docs");
+                ImageEstate.Source = "warehouse.jpg";
                 break;
         }
     }
@@ -200,12 +213,15 @@ public partial class MainPage : ContentPage
         {
             case InstitutionalType.School:
                 UpdateSpecifics("No. of Teachers", "Student Capacity");
+                ImageEstate.Source = "school.jpg";
                 break;
             case InstitutionalType.University:
                 UpdateSpecifics("Campus Area", "Student Capacity");
+                ImageEstate.Source = "school.jpg";
                 break;
             case InstitutionalType.Hospital:
                 UpdateSpecifics("No. of Beds", "No. of Parking Spots");
+                ImageEstate.Source = "hospital.jpg";
                 break;
         }
     }

@@ -56,6 +56,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\apartment.jpg" />
+	  <None Remove="Resources\Images\factory.jpg" />
+	  <None Remove="Resources\Images\hospital.jpg" />
+	  <None Remove="Resources\Images\hotel.jpg" />
+	  <None Remove="Resources\Images\house.jpg" />
+	  <None Remove="Resources\Images\rowhouse.jpg" />
+	  <None Remove="Resources\Images\school.jpg" />
+	  <None Remove="Resources\Images\shop.jpg" />
+	  <None Remove="Resources\Images\warehouse.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
@@ -65,10 +77,6 @@
 	  <ProjectReference Include="..\RealEstateDTO\RealEstateDTO.csproj" />
 	  <ProjectReference Include="..\RealEstateService\RealEstateService.csproj" />
 	  <ProjectReference Include="..\UtilitiesLib\UtilitiesLib.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
 	<ItemGroup>

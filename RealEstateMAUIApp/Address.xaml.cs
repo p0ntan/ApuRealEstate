@@ -53,24 +53,19 @@ public partial class Address : ContentView
     }
 
     /// <summary>
-    /// Validates the address by controlling that all fields have some text.
+    /// Validates the address by controlling that all entry fields have some text.
     /// </summary>
     public async void ValidateAddress()
     {
-        // Fields to control
-        Entry[] entryFields =
-        [
-            Street,
-            ZipCode,
-            City
-        ];
+        // Get all entry fields
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
 
-        foreach (Entry field in entryFields)
+        foreach (Entry field in allEntries)
         {
             if (string.IsNullOrEmpty(field.Text))
             {
                 field.Focus();
-                await App.Current.MainPage.DisplayAlert("Missing input", $"{field.Placeholder} cannot be empty.", "OK");
+                await App.Current?.MainPage?.DisplayAlert("Missing input", $"{field.Placeholder} cannot be empty.", "OK")!;
                 return;
             }
         }
