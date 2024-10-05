@@ -47,7 +47,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -66,6 +65,10 @@
 	  <ProjectReference Include="..\RealEstateDTO\RealEstateDTO.csproj" />
 	  <ProjectReference Include="..\RealEstateService\RealEstateService.csproj" />
 	  <ProjectReference Include="..\UtilitiesLib\UtilitiesLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
 </Project>
