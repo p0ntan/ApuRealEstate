@@ -22,17 +22,17 @@ public class StringConverter
         return result;
     }
 
-    public static decimal ConvertToDecimal(string stringNumber)
+    public static double ConvertToDouble(string stringNumber)
     {
-        if (!decimal.TryParse(stringNumber, out decimal result))
+        if (!double.TryParse(stringNumber, out double result))
             throw new FormatException($"'{stringNumber}' is not a valid integer.");
 
         return result;
     }
 
-    public static decimal ConvertToDecimal(string stringNumber, decimal lowLimit, decimal highLimit)
+    public static double ConvertToDouble(string stringNumber, double lowLimit, double highLimit)
     {
-        if (!decimal.TryParse(stringNumber, out decimal result))
+        if (!double.TryParse(stringNumber, out double result))
             throw new FormatException($"'{stringNumber}' is not a valid integer.");
 
         if (!(result >= lowLimit && result <= highLimit))

@@ -26,7 +26,7 @@ public class StringConverterTests
 
     [TestMethod]
     [ExpectedException(typeof(FormatException))]
-    public void ConvertToInteger_ValidDecimal_ThrowsException()
+    public void ConvertToInteger_ValidDouble_ThrowsException()
     {
         string input = "10,2";
 
@@ -81,68 +81,68 @@ public class StringConverterTests
     }
 
     [TestMethod]
-    public void ConvertToDecimal_Valid()
+    public void ConvertToDouble_Valid()
     {
         string input = "123,10";
 
-        decimal result = StringConverter.ConvertToDecimal(input);
+        double result = StringConverter.ConvertToDouble(input);
 
-        Assert.AreEqual(123.10m, result);
+        Assert.AreEqual(123.10, result);
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormatException))]
-    public void ConvertToDecimal_Invalid_ThrowsException()
+    public void ConvertToDouble_Invalid_ThrowsException()
     {
         string input = "abc";
 
-        StringConverter.ConvertToDecimal(input);
+        StringConverter.ConvertToDouble(input);
     }
 
     [TestMethod]
-    public void ConvertToDecimalInRange_ValidIInRange()
+    public void ConvertToDoubleInRange_ValidIInRange()
     {
         string input = "005,25";
-        decimal lowLimit = 0.220m;
-        decimal highLimit = 10.00m;
+        double lowLimit = 0.220;
+        double highLimit = 10.00;
 
-        decimal result = StringConverter.ConvertToDecimal(input, lowLimit, highLimit);
+        double result = StringConverter.ConvertToDouble(input, lowLimit, highLimit);
 
-        Assert.AreEqual(5.25m, result);
+        Assert.AreEqual(5.25, result);
     }
 
     [TestMethod]
-    public void ConvertToDecimalInRange_ValidInRange_LowLimit()
+    public void ConvertToDoubleInRange_ValidInRange_LowLimit()
     {
         string input = "00,220";
-        decimal lowLimit = 0.220m;
-        decimal highLimit = 10.00m;
+        double lowLimit = 0.220;
+        double highLimit = 10.00;
 
-        decimal result = StringConverter.ConvertToDecimal(input, lowLimit, highLimit);
+        double result = StringConverter.ConvertToDouble(input, lowLimit, highLimit);
 
-        Assert.AreEqual(0.220m, result);
+        Assert.AreEqual(0.220, result);
     }
 
     [TestMethod]
-    public void ConvertToDecimalInRange_ValidInRange_HighLimit()
+    public void ConvertToDoubleInRange_ValidInRange_HighLimit()
     {
         string input = "10,000";
-        decimal lowLimit = 0.220m;
-        decimal highLimit = 10.00m;
+        double lowLimit = 0.220;
+        double highLimit = 10.00;
 
-        decimal result = StringConverter.ConvertToDecimal(input, lowLimit, highLimit);
+        double result = StringConverter.ConvertToDouble(input, lowLimit, highLimit);
 
-        Assert.AreEqual(10.000m, result);
+        Assert.AreEqual(10.000, result);
     }
 
     [TestMethod]
     [ExpectedException(typeof(FormatException))]
-    public void ConvertToDecimalInRange_ValidOutOfRange_ThrowsException()
+    public void ConvertToDoubleInRange_ValidOutOfRange_ThrowsException()
     {
         string input = "10,0001";
-        decimal lowLimit = 0.220m;
-        decimal highLimit = 10.00m;
+        double lowLimit = 0.220;
+        double highLimit = 10.00;
 
-        StringConverter.ConvertToDecimal(input, lowLimit, highLimit);
+        StringConverter.ConvertToDouble(input, lowLimit, highLimit);
     }
 }
