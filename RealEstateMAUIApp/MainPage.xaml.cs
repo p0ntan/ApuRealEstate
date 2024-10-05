@@ -21,6 +21,8 @@ public partial class MainPage : ContentPage
     {
         AddEstateTypes();
         AddLegalForms();
+
+        Payment.IsEnabled = false;
     }
 
     /// <summary>
@@ -47,6 +49,16 @@ public partial class MainPage : ContentPage
     private void OnAddEstate(object sender, EventArgs e)
     {
         EstateAddress.ValidateAddress();
+    }
+
+    /// <summary>
+    /// Enables or disables payment if cheked.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void IncludePaymentCheckbox(object sender, EventArgs e)
+    {
+        Payment.IsEnabled = IncludePayment.IsChecked;
     }
 
     /// <summary>

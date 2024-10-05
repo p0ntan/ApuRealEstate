@@ -3,105 +3,130 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:RealEstateMAUIApp"
              x:Class="RealEstateMAUIApp.MainPage">
-    <VerticalStackLayout
-        Padding="30,0"
-        Spacing="25">
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            MaximumWidthRequest="1280">
 
-        <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Start" AlignContent="Stretch">
-            <VerticalStackLayout Spacing="20">
-                <FlexLayout
-                    JustifyContent="Center"
-                    Wrap="Wrap"
-                    MaximumWidthRequest="720"
-                    AlignItems="Start"
-                    AlignContent="Stretch">
-                <VerticalStackLayout
-                    Padding="5"
-                    Spacing="5"
-                    MinimumWidthRequest="360">
-                    <Label Text="Estate Info" FontSize="Small" />
-                    <Picker
-                        x:Name="EstateTypePicker"
-                        SelectedIndexChanged="EstateTypeChanged" />
-                    <Picker
-                        x:Name="SpecificTypePicker"
-                        SelectedIndexChanged="SpecificTypeChanged" />
-                    <Picker x:Name="LegalFormPicker" />
-                </VerticalStackLayout>
-
-                <local:Address x:Name="EstateAddress" MinimumWidthRequest="360" />
-            </FlexLayout>
-                <FlexLayout
-                    JustifyContent="Center"
-                    Wrap="Wrap"
-                    MaximumWidthRequest="720"
-                    AlignItems="Start"
-                    AlignContent="Stretch">
-                <VerticalStackLayout
-                    Padding="5"
-                    Spacing="5"
-                    MinimumWidthRequest="360">
-                    <Label Text="Estate Type Info" FontSize="Small" />
-                    <Grid ColumnSpacing="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label x:Name="lblType1"
-                               Text="lblType1"
-                               VerticalTextAlignment="Center" />
-                        <Entry Grid.Column="1"/>
-                        <Label x:Name="lblType2"
-                               Text="lblType2"
-                               VerticalTextAlignment="Center"
-                               Grid.Row="1"/>
-                        <Entry Grid.Column="1"
-                               Grid.Row="1"/>
-                    </Grid>
-                </VerticalStackLayout>
-                <VerticalStackLayout
-                    Padding="5"
-                    Spacing="5"
-                    MinimumWidthRequest="360">
-                    <Label Text="Estate Specific Info" FontSize="Small" />
-                    <Grid ColumnSpacing="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label
-                                x:Name="lblSpecific1"
-                                Text="lblSpecific1"
-                                VerticalTextAlignment="Center" />
-                        <Entry Grid.Column="1"/>
-                        <Label x:Name="lblSpecific2"
-                                   Text="lblSpecific2"
+            <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Start" AlignContent="Stretch">
+                <VerticalStackLayout Spacing="20">
+                    <FlexLayout
+                        JustifyContent="Center"
+                        Wrap="Wrap"
+                        MaximumWidthRequest="720"
+                        AlignItems="Start"
+                        AlignContent="Stretch">
+                        <VerticalStackLayout
+                            Padding="5"
+                            Spacing="5"
+                            MinimumWidthRequest="360">
+                            <Label Text="Estate Info" FontSize="Small" />
+                            <Picker
+                                x:Name="EstateTypePicker"
+                                SelectedIndexChanged="EstateTypeChanged" />
+                            <Picker
+                                x:Name="SpecificTypePicker"
+                                SelectedIndexChanged="SpecificTypeChanged" />
+                            <Picker x:Name="LegalFormPicker" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
+                            Spacing="5"
+                            Padding="5"
+                            MinimumWidthRequest="360">
+                            <Label Text="Address" FontSize="Small" />
+                        <local:Address x:Name="EstateAddress" />
+                        </VerticalStackLayout>
+                    </FlexLayout>
+                    <FlexLayout
+                        JustifyContent="Center"
+                        Wrap="Wrap"
+                        MaximumWidthRequest="720"
+                        AlignItems="Start"
+                        AlignContent="Stretch">
+                    <VerticalStackLayout
+                        Padding="5"
+                        Spacing="5"
+                        MinimumWidthRequest="360">
+                        <Label Text="Estate Type Info" FontSize="Small" />
+                        <Grid ColumnSpacing="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label x:Name="lblType1"
+                                   Text="lblType1"
+                                   VerticalTextAlignment="Center" />
+                            <Entry Grid.Column="1"/>
+                            <Label x:Name="lblType2"
+                                   Text="lblType2"
                                    VerticalTextAlignment="Center"
                                    Grid.Row="1"/>
-                        <Entry Grid.Column="1"
+                            <Entry Grid.Column="1"
                                    Grid.Row="1"/>
-                    </Grid>
+                        </Grid>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout
+                        Padding="5"
+                        Spacing="5"
+                        MinimumWidthRequest="360">
+                        <Label Text="Estate Specific Info" FontSize="Small" />
+                        <Grid ColumnSpacing="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label
+                                    x:Name="lblSpecific1"
+                                    Text="lblSpecific1"
+                                    VerticalTextAlignment="Center" />
+                            <Entry Grid.Column="1"/>
+                            <Label x:Name="lblSpecific2"
+                                       Text="lblSpecific2"
+                                       VerticalTextAlignment="Center"
+                                       Grid.Row="1"/>
+                            <Entry Grid.Column="1"
+                                       Grid.Row="1"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </FlexLayout>
+                </VerticalStackLayout>
+                <Image x:Name="ImageEstate"
+                       Source="house.jpg"
+                       HeightRequest="200"
+                       MinimumWidthRequest="360"
+                       Margin="0,10,0,10"
+                       Aspect="AspectFit"
+                       FlexLayout.AlignSelf="Center"/>
+            </FlexLayout>
+            <FlexLayout
+                Wrap="Wrap"
+                AlignItems="Center"
+                JustifyContent="Center"
+                AlignContent="Stretch"
+                >
+                    <local:Person x:Name="Seller" Title="Seller" MinimumWidthRequest="360" />
+                    <local:Person x:Name="Buyer" Title="Buyer" MinimumWidthRequest="360" />
+                <VerticalStackLayout>
+                    <Label Text="Payment" x:Name="TitleLabel" FontSize="Small" />
+                    <FlexLayout MinimumHeightRequest="54" AlignItems="Center" >
+                        <CheckBox x:Name="IncludePayment" CheckedChanged="IncludePaymentCheckbox" />
+                        <Label Text="Include payment?" VerticalTextAlignment="Center" FontSize="Micro" />
+                    </FlexLayout>
+                    <local:Payment x:Name="Payment" MinimumWidthRequest="360" />
                 </VerticalStackLayout>
             </FlexLayout>
-            </VerticalStackLayout>
-            <Image x:Name="ImageEstate"
-                   Source="house.jpg"
-                   HeightRequest="300"
-                   MinimumWidthRequest="450"
-                   Aspect="AspectFit"
-                   Margin="20"
-                   FlexLayout.AlignSelf="Center"/>
-        </FlexLayout>
-        <Button Text="Test Validate" Clicked="OnAddEstate" />
+            <Button Text="Test Validate" Clicked="OnAddEstate" />
 
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>
