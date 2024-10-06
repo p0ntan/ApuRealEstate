@@ -42,20 +42,19 @@ public partial class Address : ContentView
     /// <returns>An AddressDTO</returns>
     public AddressDTO GetAddress()
     {
-        string? country = CountryPicker.SelectedItem.ToString();
+        int country = CountryPicker.SelectedIndex;
 
-        if (country == null)
-            country = "Sweden";
-
-        AddressDTO addressDTO = new(Street.Text, City.Text, ZipCode.Text, country);
+        AddressDTO addressDTO = new (Street.Text, City.Text, ZipCode.Text, country);
 
         return addressDTO;
     }
 
+
     /// <summary>
     /// Validates the address by controlling that all entry fields have some text.
     /// </summary>
-    public async void ValidateAddress()
+    /// <exception cref="FormatException">If string is empty</exception>
+    public void ValidateAddress()
     {
         // Get all entry fields
         IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
@@ -65,8 +64,7 @@ public partial class Address : ContentView
             if (string.IsNullOrEmpty(field.Text))
             {
                 field.Focus();
-                await App.Current?.MainPage?.DisplayAlert("Missing input", $"{field.Placeholder} cannot be empty.", "OK")!;
-                return;
+                throw new FormatException($"{field.Placeholder} cannot be empty.");
             }
         }
     }

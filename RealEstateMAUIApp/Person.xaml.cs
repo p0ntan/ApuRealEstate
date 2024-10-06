@@ -1,3 +1,6 @@
+using RealEstateBLL.Persons;
+using RealEstateDTO;
+
 namespace RealEstateMAUIApp;
 
 public partial class Person : ContentView
@@ -21,5 +24,21 @@ public partial class Person : ContentView
     public Person()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Returns a created personDTO with from input in textcontrollers.
+    /// </summary>
+    /// <returns>The newly created person.</returns>
+    /// <param name="payment">Payment to add to a person.</param>
+    /// <returns>PersonDTO</returns>
+    public PersonDTO GetPerson(PaymentDTO? payment = null)
+    {
+        string firstName = FirstName.Text;
+        string lastName = LastName.Text;
+        AddressDTO address = PersonAddress.GetAddress();
+        PersonDTO person = new (firstName, lastName, address, payment);
+
+        return person;
     }
 }

@@ -1,4 +1,6 @@
 using RealEstateMAUIApp.Enums;
+using RealEstateDTO;
+using UtilitiesLib;
 
 namespace RealEstateMAUIApp;
 
@@ -31,6 +33,29 @@ public partial class Payment : ContentView
     }
 
     /// <summary>
+    /// Validates the payment by controlling that all entry fields have some text, and amount is a double.
+    /// </summary>
+    /// <exception cref="FormatException"></exception>
+
+    public void ValidatePayment()
+    {
+        Amount.Focus();
+        StringConverter.ConvertToDouble(Amount.Text, 0, Double.PositiveInfinity);
+
+        // Get all entry fields
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
+
+        foreach (Entry field in allEntries)
+        {
+            if (string.IsNullOrEmpty(field.Text))
+            {
+                field.Focus();
+                throw new FormatException($"{field.Placeholder} cannot be empty.");
+            }
+        }
+    }
+
+    /// <summary>
     /// Change the GUI dpending on what paytment type is chosen.
     /// </summary>
     /// <param name="sender"></param>
@@ -60,5 +85,36 @@ public partial class Payment : ContentView
                 txtPayment2.Placeholder = "Email";
                 break;
         }
+    }
+
+    /// <summary>
+    /// Returns the paymentDTO as in form. Before getting the payment the ValidatePayment should be used to make sure all fields are validated.
+    /// </summary>
+    /// <returns>Chosen payment with data.</returns>
+    /// <exception cref="Exception"></exception>
+    public PaymentDTO? GetPayment()
+    {
+        PaymentType paymentType = (PaymentType)PaymentPicker.SelectedIndex;
+
+        double amount;
+
+        try
+        {
+            amount = StringConverter.ConvertToDouble(Amount.Text);
+        }
+        catch
+        {
+            amount = 0;
+        }
+
+        PaymentDTO? payment = paymentType switch
+        {
+            PaymentType.Paypal => new PaypalDTO {Amount = amount, Email = txtPayment1.Text },
+            PaymentType.Bank => new BankDTO { Amount = amount, Name = txtPayment1.Text, AccountNumber = txtPayment2.Text },
+            PaymentType.Western_Union => new WesternUnionDTO { Amount = amount, Name = txtPayment1.Text, Email = txtPayment2.Text },
+            _ => null,
+        };
+
+        return payment;
     }
 }

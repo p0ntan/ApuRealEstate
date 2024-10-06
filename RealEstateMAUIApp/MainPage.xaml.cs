@@ -1,6 +1,8 @@
 ﻿// Created by Pontus Åkerberg 2024-10-05
+using RealEstateDTO;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
+using UtilitiesLib;
 
 namespace RealEstateMAUIApp;
 
@@ -45,10 +47,107 @@ public partial class MainPage : ContentPage
         LegalFormPicker.SelectedIndex = 0;
     }
 
-
-    private void OnAddEstate(object sender, EventArgs e)
+    private async void OnAddEstate(object sender, EventArgs e)
     {
+        try
+        {
+            // Validate form
+            ValidateForm();
+
+            // Create DTO
+            EstateCreateDTO estateDTO = CreateEstateDTO();
+
+            // Send DTO to Servicelayer
+            (bool success, int newId) response = _estateService.CreateEstate(estateDTO);
+
+            // Update form with new ID
+            if (response.success)
+                await DisplayAlert("Wrong input", $"{response.newId}", "OK")!;
+        }
+        catch (FormatException ex)
+        {
+            await DisplayAlert("Wrong input", ex.Message, "OK")!;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK")!;
+        }
+    }
+
+    private void OnUpdateEstate(object sender, EventArgs e)
+    {
+        // Validate
+
+        // Create DTO
+
+        // Send DTO to Servicelayer
         EstateAddress.ValidateAddress();
+    }
+
+    private void OnDeleteEstate(object sender, EventArgs e)
+    {
+        // Control id
+
+        // Send ID to Service for deletion (no need for DTO?)
+
+        // Reset form
+    }
+
+    /// <summary>
+    /// Validates the form, 
+    /// </summary>
+    /// <exception cref="FormatException">Rethrows exception if any.</exception>
+    private void ValidateForm()
+    {
+        try
+        {
+            // Validate Estate Address 
+            EstateAddress.ValidateAddress();
+
+            // Validate input fields for estate info, focus on each one first in case they fail.
+            txtType1.Focus();
+            StringConverter.ConvertToInteger(txtType1.Text, 0, 2500);
+            txtType2.Focus();
+            StringConverter.ConvertToInteger(txtType2.Text);
+            txtSpecific1.Focus();
+            StringConverter.ConvertToInteger(txtSpecific1.Text);
+            txtSpecific2.Focus();
+            StringConverter.ConvertToInteger(txtSpecific2.Text);
+
+            // Validate payment if included
+            if (IncludePayment.IsChecked)
+                Payment.ValidatePayment();
+
+            EstateTypePicker.Focus();
+        }
+        catch (FormatException ex)
+        {
+            throw new FormatException(ex.Message);
+        }
+    }
+
+    private EstateCreateDTO CreateEstateDTO()
+    {
+        PaymentDTO? paymentDTO = null;
+
+        if (IncludePayment.IsChecked)
+            paymentDTO = Payment.GetPayment();
+
+        EstateCreateDTO estateDTO = new(
+            null,
+            EstateTypePicker.SelectedIndex,
+            SpecificTypePicker.SelectedIndex,
+            LegalFormPicker.SelectedIndex,
+            EstateAddress.GetAddress(),
+            Seller.GetPerson(),
+            Buyer.GetPerson(paymentDTO),
+            StringConverter.ConvertToInteger(txtType1.Text, 0, 2500),
+            StringConverter.ConvertToInteger(txtType2.Text),
+            StringConverter.ConvertToInteger(txtSpecific1.Text),
+            StringConverter.ConvertToInteger(txtSpecific2.Text)
+            );
+
+        return estateDTO;
     }
 
     /// <summary>

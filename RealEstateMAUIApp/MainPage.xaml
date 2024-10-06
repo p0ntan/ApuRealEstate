@@ -4,11 +4,7 @@
              xmlns:local="clr-namespace:RealEstateMAUIApp"
              x:Class="RealEstateMAUIApp.MainPage">
     <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25"
-            MaximumWidthRequest="1280">
-
+        <VerticalStackLayout Padding="30,0" Spacing="25" MaximumWidthRequest="1280">
             <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Start" AlignContent="Stretch">
                 <VerticalStackLayout Spacing="20">
                     <FlexLayout
@@ -17,23 +13,13 @@
                         MaximumWidthRequest="720"
                         AlignItems="Start"
                         AlignContent="Stretch">
-                        <VerticalStackLayout
-                            Padding="5"
-                            Spacing="5"
-                            MinimumWidthRequest="360">
+                        <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="360">
                             <Label Text="Estate Info" FontSize="Small" />
-                            <Picker
-                                x:Name="EstateTypePicker"
-                                SelectedIndexChanged="EstateTypeChanged" />
-                            <Picker
-                                x:Name="SpecificTypePicker"
-                                SelectedIndexChanged="SpecificTypeChanged" />
+                            <Picker x:Name="EstateTypePicker" SelectedIndexChanged="EstateTypeChanged" />
+                            <Picker x:Name="SpecificTypePicker" SelectedIndexChanged="SpecificTypeChanged" />
                             <Picker x:Name="LegalFormPicker" />
                         </VerticalStackLayout>
-                        <VerticalStackLayout
-                            Spacing="5"
-                            Padding="5"
-                            MinimumWidthRequest="360">
+                        <VerticalStackLayout Spacing="5" Padding="5" MinimumWidthRequest="360">
                             <Label Text="Address" FontSize="Small" />
                         <local:Address x:Name="EstateAddress" />
                         </VerticalStackLayout>
@@ -44,10 +30,7 @@
                         MaximumWidthRequest="720"
                         AlignItems="Start"
                         AlignContent="Stretch">
-                    <VerticalStackLayout
-                        Padding="5"
-                        Spacing="5"
-                        MinimumWidthRequest="360">
+                    <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="360">
                         <Label Text="Estate Type Info" FontSize="Small" />
                         <Grid ColumnSpacing="5">
                             <Grid.RowDefinitions>
@@ -58,22 +41,13 @@
                                 <ColumnDefinition Width="140" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label x:Name="lblType1"
-                                   Text="lblType1"
-                                   VerticalTextAlignment="Center" />
-                            <Entry Grid.Column="1"/>
-                            <Label x:Name="lblType2"
-                                   Text="lblType2"
-                                   VerticalTextAlignment="Center"
-                                   Grid.Row="1"/>
-                            <Entry Grid.Column="1"
-                                   Grid.Row="1"/>
+                            <Label x:Name="lblType1" Text="lblType1" VerticalTextAlignment="Center" />
+                            <Entry x:Name="txtType1" Grid.Column="1"/>
+                            <Label x:Name="lblType2" Text="lblType2" VerticalTextAlignment="Center" Grid.Row="1"/>
+                             <Entry x:Name="txtType2" Grid.Column="1" Grid.Row="1"/>
                         </Grid>
                     </VerticalStackLayout>
-                    <VerticalStackLayout
-                        Padding="5"
-                        Spacing="5"
-                        MinimumWidthRequest="360">
+                    <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="360">
                         <Label Text="Estate Specific Info" FontSize="Small" />
                         <Grid ColumnSpacing="5">
                             <Grid.RowDefinitions>
@@ -84,17 +58,10 @@
                                 <ColumnDefinition Width="140" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label
-                                    x:Name="lblSpecific1"
-                                    Text="lblSpecific1"
-                                    VerticalTextAlignment="Center" />
-                            <Entry Grid.Column="1"/>
-                            <Label x:Name="lblSpecific2"
-                                       Text="lblSpecific2"
-                                       VerticalTextAlignment="Center"
-                                       Grid.Row="1"/>
-                            <Entry Grid.Column="1"
-                                       Grid.Row="1"/>
+                            <Label x:Name="lblSpecific1" Text="lblSpecific1" VerticalTextAlignment="Center" />
+                            <Entry x:Name="txtSpecific1" Grid.Column="1"/>
+                            <Label x:Name="lblSpecific2" Text="lblSpecific2" VerticalTextAlignment="Center" Grid.Row="1"/>
+                            <Entry x:Name="txtSpecific2" Grid.Column="1" Grid.Row="1"/>
                         </Grid>
                     </VerticalStackLayout>
                 </FlexLayout>
@@ -124,7 +91,13 @@
                     <local:Payment x:Name="Payment" MinimumWidthRequest="360" />
                 </VerticalStackLayout>
             </FlexLayout>
-            <Button Text="Test Validate" Clicked="OnAddEstate" />
+
+            <FlexLayout Wrap="Wrap" AlignItems="Center" AlignContent="Stretch" JustifyContent="SpaceEvenly">
+                <Button Text="Add Estate" Clicked="OnAddEstate" />
+                <Button Text="Update Estate" Clicked="OnAddEstate" />
+                <Button Text="Delete Estate" Clicked="OnAddEstate" BackgroundColor="DarkRed" TextColor="White"/>
+                <Button Text="Empty Form" Clicked="OnAddEstate" BackgroundColor="{StaticResource White}" />
+            </FlexLayout>
 
         </VerticalStackLayout>
     </ScrollView>
