@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RealEstateMAUIApp.ExistingsEstates">
+
+    <VerticalStackLayout>
+        <Label 
+            Text="Existing Estates"
+            VerticalOptions="Center" 
+            FontSize="Small" />
+        <HorizontalStackLayout>
+            <CollectionView  x:Name="EstateCollection"
+                             SelectionMode="Single"
+                             SelectionChanged="OnSelectionChanged"
+                             ItemsUpdatingScrollMode="KeepLastItemInView"
+                             EmptyView="No estates yet.">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding .}" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <VerticalStackLayout x:Name="EstateDetails">
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentView>
+    
