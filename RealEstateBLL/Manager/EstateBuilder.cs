@@ -10,6 +10,13 @@ public class EstateBuilder
 {
     private Estate _estate;
 
+    /// <summary>
+    /// Create a builder that creates an estate and saves it in own variable.
+    /// Concrete type of estate is based on estateType and specific index.
+    /// </summary>
+    /// <param name="estateType"></param>
+    /// <param name="specificTypeIndex"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public EstateBuilder(EstateType estateType, int specificTypeIndex)
     {
         Estate? estate = CreateEstate(estateType, specificTypeIndex);
@@ -38,21 +45,13 @@ public class EstateBuilder
         return this;
     }
 
-    public EstateBuilder AddSeller(Seller seller)
+    public EstateBuilder AddSeller(Seller? seller)
     {
         _estate.Seller = seller;
         return this;
     }
 
-    public EstateBuilder AddPayment(Payment? payment)
-    {
-        if (_estate.Buyer != null)
-            _estate.Buyer.Payment = payment;
-
-        return this;
-    }
-
-    public EstateBuilder AddBuyer(Buyer buyer)
+    public EstateBuilder AddBuyer(Buyer? buyer)
     {
         _estate.Buyer = buyer;
         return this;

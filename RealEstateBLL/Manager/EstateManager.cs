@@ -17,8 +17,8 @@ public class EstateManager : DictionaryManager<int, Estate>
     private int _nextId = 10000;
 
     /// <summary>
-    /// Adds an new item to the dictionary, making the manager choose the unique id for the new estate.
-    /// Using the _nextId to sets the unique ID of the Estate and use that at key.
+    /// Adds an new item to the manager, making the manager choose the unique id for the new estate.
+    /// Using the _nextId to sets the unique ID of the Estate and use that key.
     /// </summary>
     /// <param name="item"></param>
     /// <returns>True if added, false if not.</returns>
