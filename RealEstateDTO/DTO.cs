@@ -24,7 +24,6 @@ public abstract record EstateDTO
 }
 
 // Estate types
-
 public abstract record ResidentialDTO : EstateDTO
 {
     public int Area { get; init; }
