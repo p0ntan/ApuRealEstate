@@ -28,8 +28,12 @@ public class SaveFileDialog : ISaveFileDialog
                 savePicker.FileTypeChoices.Add(fileType.Key, fileType.Value);
             }
 
-            var hwnd = ((MauiWinUIWindow)Application.Current.Windows[0].Handler.PlatformView).WindowHandle;
-            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+            var hwnd = ((MauiWinUIWindow?)Application.Current?.Windows[0].Handler.PlatformView)?.WindowHandle;
+            
+            if (hwnd == null)
+                return null;
+            
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, (nint) hwnd);
 
             var file = await savePicker.PickSaveFileAsync();
 
