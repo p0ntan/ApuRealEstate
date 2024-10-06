@@ -10,6 +10,8 @@ public partial class MainPage : ContentPage
 {
     private readonly EstateService _estateService;
 
+    private bool _formHasChanges;
+
     public MainPage(EstateService estateService)
     {
         InitializeComponent();
@@ -17,6 +19,8 @@ public partial class MainPage : ContentPage
         _estateService = estateService;
 
         InitializeGUI();
+
+        _formHasChanges = false;
     }
 
     private void InitializeGUI()
@@ -47,6 +51,12 @@ public partial class MainPage : ContentPage
         LegalFormPicker.SelectedIndex = 0;
     }
 
+    /// <summary>
+    /// Validates the inputs before creating an DTO for new estates.
+    /// Sends the created DTO to the servicelayer, recives a boolean if created and the new id for the estate.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void OnAddEstate(object sender, EventArgs e)
     {
         try
@@ -60,9 +70,14 @@ public partial class MainPage : ContentPage
             // Send DTO to Servicelayer
             (bool success, int newId) response = _estateService.CreateEstate(estateDTO);
 
-            // Update form with new ID
+            // Message user, and update form with new ID
             if (response.success)
-                await DisplayAlert("Wrong input", $"{response.newId}", "OK")!;
+            {
+                UpdateGuiForExistingEstate(response.newId);
+                await DisplayAlert("Estate added", $"Estate added with id {response.newId}", "OK");
+            }
+            else
+                await DisplayAlert("Estate not added", "Control inputs, couldn't create estate.", "OK");
         }
         catch (FormatException ex)
         {
@@ -72,6 +87,18 @@ public partial class MainPage : ContentPage
         {
             await DisplayAlert("Error", ex.Message, "OK")!;
         }
+    }
+
+    /// <summary>
+    /// Updates the GUI by setting the ID to given id and disables buttons.
+    /// </summary>
+    /// <param name="estateId">Estate id to show in form.</param>
+    private void UpdateGuiForExistingEstate(int estateId)
+    {
+        EstateId.Text = $"ID: {estateId}";
+        EstateTypePicker.IsEnabled = false;
+        SpecificTypePicker.IsEnabled = false;
+        BtnAdd.IsEnabled = false;
     }
 
     private void OnUpdateEstate(object sender, EventArgs e)
@@ -84,13 +111,29 @@ public partial class MainPage : ContentPage
         EstateAddress.ValidateAddress();
     }
 
-    private void OnDeleteEstate(object sender, EventArgs e)
+    private async void OnDeleteEstate(object sender, EventArgs e)
     {
-        // Control id
+        string estateId = EstateId.Text;
+
+        if (string.IsNullOrEmpty(estateId))
+            await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
+
+
 
         // Send ID to Service for deletion (no need for DTO?)
 
         // Reset form
+    }
+
+
+    /// <summary>
+    /// Resets the form when button is clicked.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnResetForm(object sender, EventArgs e)
+    {
+        ResetForm();
     }
 
     /// <summary>
@@ -126,6 +169,10 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Creates a DTO for creating new estates. Method should run after the form as been validated.
+    /// </summary>
+    /// <returns>An comlete estate as DTO</returns>
     private EstateCreateDTO CreateEstateDTO()
     {
         PaymentDTO? paymentDTO = null;
@@ -145,7 +192,7 @@ public partial class MainPage : ContentPage
             StringConverter.ConvertToInteger(txtType2.Text),
             StringConverter.ConvertToInteger(txtSpecific1.Text),
             StringConverter.ConvertToInteger(txtSpecific2.Text)
-            );
+        );
 
         return estateDTO;
     }
@@ -346,5 +393,36 @@ public partial class MainPage : ContentPage
     {
         lblSpecific1.Text = firstLabel;
         lblSpecific2.Text = secondLabel;
+    }
+
+    /// <summary>
+    /// Resets all fields in the form.
+    /// </summary>
+    private void ResetForm()
+    {
+        EstateId.Text = string.Empty;
+        EstateAddress.Reset();
+        Buyer.Reset();
+        Seller.Reset();
+        Payment.Reset();
+
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
+
+        foreach (Entry field in allEntries)
+        {
+            field.Text = string.Empty;
+        }
+
+        LegalFormPicker.ItemsSource = Enum.GetNames(typeof(LegalForm));
+        EstateTypePicker.ItemsSource = Enum.GetNames(typeof(EstateType));
+
+        IncludePayment.IsChecked = false;
+        EstateTypePicker.IsEnabled = true;
+        SpecificTypePicker.IsEnabled = true;
+        BtnAdd.IsEnabled = true;
+
+        _formHasChanges = false;
+
+        EstateTypePicker.Focus();
     }
 }

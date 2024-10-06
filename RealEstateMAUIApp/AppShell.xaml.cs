@@ -36,7 +36,7 @@ public partial class AppShell : Shell
             if (result != null)
                 await DisplayAlert("Open JSON", result.FullPath, "OK");
         }
-        catch (Exception ex)
+        catch
         {
             await DisplayAlert("Open JSON", "User pushed cancel.", "OK");
         }
@@ -61,7 +61,7 @@ public partial class AppShell : Shell
             if (result != null)
                 await DisplayAlert("Open JSON", result.FullPath, "OK");
         }
-        catch (Exception ex)
+        catch
         {
             await DisplayAlert("Open JSON", "User pushed cancel.", "OK");
         }

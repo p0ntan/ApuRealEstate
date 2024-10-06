@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:RealEstateMAUIApp"
              x:Class="RealEstateMAUIApp.MainPage">
-    <ScrollView>
-        <VerticalStackLayout Padding="30,0" Spacing="25" MaximumWidthRequest="1280">
+    <ScrollView MaximumWidthRequest="1280">
+        <VerticalStackLayout Padding="30,0" Spacing="25">
             <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Start" AlignContent="Stretch">
                 <VerticalStackLayout Spacing="20">
                     <FlexLayout
@@ -14,7 +14,10 @@
                         AlignItems="Start"
                         AlignContent="Stretch">
                         <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="360">
-                            <Label Text="Estate Info" FontSize="Small" />
+                            <FlexLayout JustifyContent="SpaceBetween" MaximumWidthRequest="340" >
+                                <Label Text="Estate Info" FontSize="Small" />
+                                <Label Text="" x:Name="EstateId" FontSize="Small" TextColor="{StaticResource Gray400}" />
+                            </FlexLayout>
                             <Picker x:Name="EstateTypePicker" SelectedIndexChanged="EstateTypeChanged" />
                             <Picker x:Name="SpecificTypePicker" SelectedIndexChanged="SpecificTypeChanged" />
                             <Picker x:Name="LegalFormPicker" />
@@ -93,10 +96,10 @@
             </FlexLayout>
 
             <FlexLayout Wrap="Wrap" AlignItems="Center" AlignContent="Stretch" JustifyContent="SpaceEvenly">
-                <Button Text="Add Estate" Clicked="OnAddEstate" />
+                <Button Text="Add Estate" x:Name="BtnAdd" Clicked="OnAddEstate" />
                 <Button Text="Update Estate" Clicked="OnAddEstate" />
                 <Button Text="Delete Estate" Clicked="OnAddEstate" BackgroundColor="DarkRed" TextColor="White"/>
-                <Button Text="Empty Form" Clicked="OnAddEstate" BackgroundColor="{StaticResource White}" />
+                <Button Text="Empty Form" Clicked="OnResetForm" BackgroundColor="{StaticResource White}" />
             </FlexLayout>
 
         </VerticalStackLayout>
