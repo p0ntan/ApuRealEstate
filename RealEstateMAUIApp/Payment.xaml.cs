@@ -1,22 +1,26 @@
+// Created by Pontus Åkerberg 2024-10-05
 using RealEstateMAUIApp.Enums;
 using RealEstateDTO;
 using UtilitiesLib;
 
 namespace RealEstateMAUIApp;
 
+/// <summary>
+/// Payment is a component for all payment related actions.
+/// </summary>
 public partial class Payment : ContentView
 {
 	public Payment()
 	{
 		InitializeComponent();
 
-        ResetControl();
+        Reset();
     }
 
     /// <summary>
     /// Resets all textfields and and picker.
     /// </summary>
-    public void ResetControl()
+    public void Reset()
     {
         // Get all entry fields
         IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
@@ -36,7 +40,6 @@ public partial class Payment : ContentView
     /// Validates the payment by controlling that all entry fields have some text, and amount is a double.
     /// </summary>
     /// <exception cref="FormatException"></exception>
-
     public void ValidatePayment()
     {
         Amount.Focus();
@@ -47,6 +50,9 @@ public partial class Payment : ContentView
 
         foreach (Entry field in allEntries)
         {
+            if (!field.IsVisible)
+                continue;
+
             if (string.IsNullOrEmpty(field.Text))
             {
                 field.Focus();
@@ -65,7 +71,7 @@ public partial class Payment : ContentView
         PaymentType paymentType = (PaymentType)PaymentPicker.SelectedIndex;
 
         // Reset visability
-        txtPayment2.IsVisible= true;
+        txtPayment2.IsVisible = true;
 
         txtPayment1.Text = string.Empty;
         txtPayment2.Text = string.Empty;
@@ -104,7 +110,7 @@ public partial class Payment : ContentView
         }
         catch
         {
-            amount = 0;
+            amount = 0; // Default it to zero
         }
 
         PaymentDTO? payment = paymentType switch

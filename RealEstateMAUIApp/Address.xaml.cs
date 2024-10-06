@@ -49,7 +49,6 @@ public partial class Address : ContentView
         return addressDTO;
     }
 
-
     /// <summary>
     /// Validates the address by controlling that all entry fields have some text.
     /// </summary>
@@ -67,5 +66,21 @@ public partial class Address : ContentView
                 throw new FormatException($"{field.Placeholder} cannot be empty.");
             }
         }
+    }
+
+    /// <summary>
+    /// Resets all textfields and sets default country to Sweden.
+    /// </summary>
+    public void Reset()
+    {
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
+
+        foreach (Entry field in allEntries)
+        {
+            field.Text = string.Empty;
+        }
+
+        // Set Sweden as default.
+        CountryPicker.SelectedItem = "Sweden";
     }
 }

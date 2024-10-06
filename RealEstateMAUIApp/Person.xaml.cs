@@ -1,4 +1,4 @@
-using RealEstateBLL.Persons;
+// Created by Pontus Åkerberg 2024-10-05
 using RealEstateDTO;
 
 namespace RealEstateMAUIApp;
@@ -34,11 +34,25 @@ public partial class Person : ContentView
     /// <returns>PersonDTO</returns>
     public PersonDTO GetPerson(PaymentDTO? payment = null)
     {
-        string firstName = FirstName.Text;
-        string lastName = LastName.Text;
         AddressDTO address = PersonAddress.GetAddress();
-        PersonDTO person = new (firstName, lastName, address, payment);
+        PersonDTO person = new (FirstName.Text, LastName.Text, address, payment);
 
         return person;
+    }
+
+    /// <summary>
+    /// Resets all textboxes and address controller.
+    /// </summary>
+
+    public void Reset()
+    {
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
+
+        foreach (Entry field in allEntries)
+        {
+            field.Text = string.Empty;
+        }
+
+        PersonAddress.Reset();
     }
 }
