@@ -74,10 +74,10 @@ public partial class MainPage : ContentPage
             if (response.success)
             {
                 UpdateGuiForExistingEstate(response.newId);
-                await DisplayAlert("Estate added", $"Estate added with id {response.newId}", "OK");
+                await DisplayAlert("Estate Added", $"Estate added with id {response.newId}", "OK");
             }
             else
-                await DisplayAlert("Estate not added", "Control inputs, couldn't create estate.", "OK");
+                await DisplayAlert("Estate Not Added", "Control inputs, couldn't create estate.", "OK");
         }
         catch (FormatException ex)
         {
@@ -95,7 +95,7 @@ public partial class MainPage : ContentPage
     /// <param name="estateId">Estate id to show in form.</param>
     private void UpdateGuiForExistingEstate(int estateId)
     {
-        EstateId.Text = $"ID: {estateId}";
+        EstateId.Text = estateId.ToString();
         EstateTypePicker.IsEnabled = false;
         SpecificTypePicker.IsEnabled = false;
         BtnAdd.IsEnabled = false;
@@ -113,16 +113,30 @@ public partial class MainPage : ContentPage
 
     private async void OnDeleteEstate(object sender, EventArgs e)
     {
-        string estateId = EstateId.Text;
+        try
+        {
+            string estateId = EstateId.Text;
 
-        if (string.IsNullOrEmpty(estateId))
-            await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
+            if (string.IsNullOrEmpty(estateId))
+                await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
 
+            int idAsInteger = StringConverter.ConvertToInteger(estateId);
+            bool success = _estateService.DeleteEstate(idAsInteger);
 
-
-        // Send ID to Service for deletion (no need for DTO?)
-
-        // Reset form
+            if (success)
+            {
+                ResetForm();
+                await DisplayAlert("Estate Deleted", $"Estate with id {estateId} deleted", "OK")!;
+            }
+        }
+        catch (FormatException)
+        {
+            await DisplayAlert("Wrong input", "ID is not a valid integer", "OK")!;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK")!;
+        }
     }
 
 

@@ -3,7 +3,6 @@ using RealEstateBLL;
 using RealEstateBLL.Estates;
 using RealEstateBLL.Manager;
 using RealEstateBLL.Persons;
-using RealEstateBLL.Payments;
 using RealEstateDTO;
 
 namespace RealEstateService;
@@ -15,6 +14,11 @@ public class EstateService
 {
     private EstateManager _estateManager = new();
 
+    /// <summary>
+    /// Create an estate and add it to system/manager. Method is to be seen as the Create in a CRUD API.
+    /// </summary>
+    /// <param name="estate">EstateDTO to add to system.</param>
+    /// <returns>Boolean if success and the new id of the estate to show for user.</returns>
     public (bool, int) CreateEstate(EstateCreateDTO estate)
     {
         // Map all details and create classes
@@ -38,6 +42,18 @@ public class EstateService
         bool added = _estateManager.Add(newEstate);
 
         return (added, newEstate.ID);
+    }
+
+    /// <summary>
+    /// Method to delete an estate from the system/manager. Method is to be seen as the Delete in a CRUD API.
+    /// </summary>
+    /// <param name="estateID">Id of estate to delete.</param>
+    /// <returns>True if deleted, False if not.</returns>
+    public bool DeleteEstate(int estateID)
+    {
+        bool isDeleted = _estateManager.Delete(estateID);
+
+        return isDeleted;
     }
 
     /// <summary>
