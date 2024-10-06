@@ -17,17 +17,16 @@ public class EstateManager : DictionaryManager<int, Estate>
     private int _nextId = 10000;
 
     /// <summary>
-    /// Adds an item to the dictionary with the given key. Sets the unique ID of the Estate to the nextID in manager when added.
-    /// Checks that the key isn't already in dictionary and that the item is not null.
+    /// Adds an new item to the dictionary, making the manager choose the unique id for the new estate.
+    /// Using the _nextId to sets the unique ID of the Estate and use that at key.
     /// </summary>
-    /// <param name="key"></param>
     /// <param name="item"></param>
     /// <returns>True if added, false if not.</returns>
-    public override bool Add(int key, Estate item)
+    public bool Add(Estate item)
     {
         item.ID = _nextId;
 
-        bool itemAdded = base.Add(key, item);  // Using the base Add method.
+        bool itemAdded = Add(item.ID, item);  // Using the base Add method.
 
         if (itemAdded)
             _nextId++;
