@@ -8,16 +8,11 @@ namespace RealEstateMAUIApp;
 
 public partial class MainPage : ContentPage
 {
-    private readonly EstateService _estateService;
-
     private bool _formHasChanges;
 
-    public MainPage(EstateService estateService)
+    public MainPage()
     {
         InitializeComponent();
-
-        _estateService = estateService;
-
         InitializeGUI();
 
         _formHasChanges = false;
@@ -64,11 +59,13 @@ public partial class MainPage : ContentPage
             // Validate form
             ValidateForm();
 
-            // Create DTO
             EstateCreateDTO estateDTO = CreateEstateDTO();
 
+            // Use singleton for keeping same instance of EstateService
+            EstateService estateService = EstateService.GetInstance();
+
             // Send DTO to Servicelayer
-            (bool success, int newId) response = _estateService.CreateEstate(estateDTO);
+            (bool success, int newId) response = estateService.CreateEstate(estateDTO);
 
             // Message user, and update form with new ID
             if (response.success)
@@ -96,19 +93,22 @@ public partial class MainPage : ContentPage
     private void UpdateGuiForExistingEstate(int estateId)
     {
         EstateId.Text = estateId.ToString();
+
         EstateTypePicker.IsEnabled = false;
         SpecificTypePicker.IsEnabled = false;
         BtnAdd.IsEnabled = false;
+
+        ExistingEstates.UpdateList();
     }
 
     private void OnUpdateEstate(object sender, EventArgs e)
     {
+        ExistingEstates.UpdateList();
         // Validate
 
         // Create DTO
 
         // Send DTO to Servicelayer
-        EstateAddress.ValidateAddress();
     }
 
     private async void OnDeleteEstate(object sender, EventArgs e)
@@ -121,11 +121,14 @@ public partial class MainPage : ContentPage
                 await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
 
             int idAsInteger = StringConverter.ConvertToInteger(estateId);
-            bool success = _estateService.DeleteEstate(idAsInteger);
+
+            EstateService estateService = EstateService.GetInstance();
+            bool success = estateService.DeleteEstate(idAsInteger);
 
             if (success)
             {
                 ResetForm();
+                ExistingEstates.UpdateList();
                 await DisplayAlert("Estate Deleted", $"Estate with id {estateId} deleted", "OK")!;
             }
         }
