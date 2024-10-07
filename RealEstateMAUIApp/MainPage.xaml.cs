@@ -2,6 +2,7 @@
 using RealEstateDTO;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
+using System.Runtime.CompilerServices;
 using UtilitiesLib;
 
 namespace RealEstateMAUIApp;
@@ -16,6 +17,8 @@ public partial class MainPage : ContentPage
         InitializeGUI();
 
         _formHasChanges = false;
+
+        ExistingEstates.SelectedEstateChanged += SelectedEstateChanges;
     }
 
     private void InitializeGUI()
@@ -71,6 +74,8 @@ public partial class MainPage : ContentPage
             if (response.success)
             {
                 UpdateGuiForExistingEstate(response.newId);
+                ExistingEstates.UpdateList();
+                BtnUpdate.Focus();
                 await DisplayAlert("Estate Added", $"Estate added with id {response.newId}", "OK");
             }
             else
@@ -97,8 +102,6 @@ public partial class MainPage : ContentPage
         EstateTypePicker.IsEnabled = false;
         SpecificTypePicker.IsEnabled = false;
         BtnAdd.IsEnabled = false;
-
-        ExistingEstates.UpdateList();
     }
 
     private void OnUpdateEstate(object sender, EventArgs e)
@@ -109,6 +112,35 @@ public partial class MainPage : ContentPage
         // Create DTO
 
         // Send DTO to Servicelayer
+    }
+
+    private async void SelectedEstateChanges(object sender, EstateChangedEventArgs e)
+    {
+        int estateId = e.Value;
+
+        if (_formHasChanges)
+            await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
+
+        UpdateFormWithEstate(estateId);
+    }
+
+    private void UpdateFormWithEstate(int estateId)
+    {
+        EstateService estateService = EstateService.GetInstance();
+        EstateCreateDTO? estate = estateService.GetEstate(estateId);
+
+        if (estate == null) return;
+
+        UpdateGuiForExistingEstate(estate.estateId ?? -1);
+        EstateTypePicker.SelectedIndex = estate.EstateType;
+        SpecificTypePicker.SelectedIndex = estate.SpecificTypeIndex;
+
+        txtType1.Text = estate.TypeDataOne.ToString();
+        txtType2.Text = estate.TypeDataTwo.ToString();
+        txtSpecific1.Text = estate.SpecificDataOne.ToString();
+        txtSpecific2.Text = estate.SpecificDataTwo.ToString();
+
+        EstateAddress.SetAddress(estate.Address);
     }
 
     private async void OnDeleteEstate(object sender, EventArgs e)
@@ -129,6 +161,7 @@ public partial class MainPage : ContentPage
             {
                 ResetForm();
                 ExistingEstates.UpdateList();
+                ExistingEstates.SelectNone();
                 await DisplayAlert("Estate Deleted", $"Estate with id {estateId} deleted", "OK")!;
             }
         }
@@ -142,7 +175,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-
     /// <summary>
     /// Resets the form when button is clicked.
     /// </summary>
@@ -150,6 +182,7 @@ public partial class MainPage : ContentPage
     /// <param name="e"></param>
     private void OnResetForm(object sender, EventArgs e)
     {
+        ExistingEstates.SelectNone();
         ResetForm();
     }
 
@@ -159,30 +192,38 @@ public partial class MainPage : ContentPage
     /// <exception cref="FormatException">Rethrows exception if any.</exception>
     private void ValidateForm()
     {
+        // Used for better output for user when an error occurs. Only for estate info/details
+        string currentLabel = string.Empty;
+
         try
         {
             // Validate Estate Address 
             EstateAddress.ValidateAddress();
 
+            (Label lbl, Entry txt)[] integerFields = 
+                [(lblType1, txtType1),(lblType2, txtType2), (lblSpecific1, txtSpecific1), (lblSpecific2, txtSpecific2)];
+
             // Validate input fields for estate info, focus on each one first in case they fail.
-            txtType1.Focus();
-            StringConverter.ConvertToInteger(txtType1.Text, 0, 2500);
-            txtType2.Focus();
-            StringConverter.ConvertToInteger(txtType2.Text);
-            txtSpecific1.Focus();
-            StringConverter.ConvertToInteger(txtSpecific1.Text);
-            txtSpecific2.Focus();
-            StringConverter.ConvertToInteger(txtSpecific2.Text);
+            foreach (var item in integerFields)
+            {
+                item.txt.Focus();
+                currentLabel = item.lbl.Text + " ";
+
+                if (item.txt == txtType1)
+                    StringConverter.ConvertToInteger(txtType1.Text, 0, 2500);
+                else
+                    StringConverter.ConvertToInteger(item.txt.Text);
+            }
+
+            currentLabel = string.Empty;  // Reset after use
 
             // Validate payment if included
             if (IncludePayment.IsChecked)
                 Payment.ValidatePayment();
-
-            EstateTypePicker.Focus();
         }
         catch (FormatException ex)
         {
-            throw new FormatException(ex.Message);
+            throw new FormatException(currentLabel + ex.Message);
         }
     }
 
@@ -275,6 +316,8 @@ public partial class MainPage : ContentPage
                 break;
         }
     }
+
+    #region Update GUI methods when changing estate type
 
     /// <summary>
     /// Updates the GUI with details specific for all Residentials.
@@ -411,6 +454,8 @@ public partial class MainPage : ContentPage
         lblSpecific1.Text = firstLabel;
         lblSpecific2.Text = secondLabel;
     }
+
+    #endregion
 
     /// <summary>
     /// Resets all fields in the form.

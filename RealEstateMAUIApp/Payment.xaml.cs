@@ -115,8 +115,8 @@ public partial class Payment : ContentView
 
         PaymentDTO? payment = paymentType switch
         {
-            PaymentType.Paypal => new PaypalDTO {Amount = amount, Email = txtPayment1.Text },
             PaymentType.Bank => new BankDTO { Amount = amount, Name = txtPayment1.Text, AccountNumber = txtPayment2.Text },
+            PaymentType.Paypal => new PaypalDTO {Amount = amount, Email = txtPayment1.Text },
             PaymentType.Western_Union => new WesternUnionDTO { Amount = amount, Name = txtPayment1.Text, Email = txtPayment2.Text },
             _ => null,
         };

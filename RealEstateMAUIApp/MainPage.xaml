@@ -97,7 +97,7 @@
 
             <FlexLayout Wrap="Wrap" AlignItems="Center" AlignContent="Stretch" JustifyContent="SpaceEvenly">
                 <Button Text="Add Estate" x:Name="BtnAdd" Clicked="OnAddEstate" />
-                <Button Text="Update Estate" Clicked="OnUpdateEstate" />
+                <Button Text="Update Estate" x:Name="BtnUpdate" Clicked="OnUpdateEstate" />
                 <Button Text="Delete Estate" Clicked="OnDeleteEstate" BackgroundColor="DarkRed" TextColor="White"/>
                 <Button Text="Empty Form" Clicked="OnResetForm" BackgroundColor="{StaticResource White}" />
             </FlexLayout>

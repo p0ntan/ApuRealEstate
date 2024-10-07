@@ -5,9 +5,16 @@ namespace RealEstateMAUIApp;
 
 public partial class ExistingsEstates : ContentView
 {
+    public event EventHandler<EstateChangedEventArgs>? SelectedEstateChanged = null;
+
     public ExistingsEstates()
 	{
 		InitializeComponent();
+    }
+
+    public void SelectNone()
+    {
+        EstateCollection.SelectedItem = null;
     }
 
 	public void UpdateList()
@@ -19,7 +26,7 @@ public partial class ExistingsEstates : ContentView
         EstateCollection.ItemsSource = estates;
 	}
 
-    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void OnEstateSelectionChanged(object sender, SelectedItemChangedEventArgs e)
     {
         EstateDetails.Children.Clear();
 
@@ -37,7 +44,7 @@ public partial class ExistingsEstates : ContentView
             return;
 
         EstateService estateService = EstateService.GetInstance();
-        List<string>? estate = estateService.GetEstate(idAsInt);
+        List<string>? estate = estateService.GetEstateAsListOfStrings(idAsInt);
 
         if (estate == null)
             return;
@@ -51,5 +58,17 @@ public partial class ExistingsEstates : ContentView
 
             EstateDetails.Children.Add(label);
         }
+
+        SelectedEstateChanged?.Invoke(this, new EstateChangedEventArgs(idAsInt));
+    }
+}
+
+public class EstateChangedEventArgs : EventArgs
+{
+    public int Value { get; set; }
+
+    public EstateChangedEventArgs(int value)
+    {
+        Value = value;
     }
 }

@@ -3,26 +3,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RealEstateMAUIApp.ExistingsEstates">
 
-    <VerticalStackLayout>
+    <VerticalStackLayout MaximumWidthRequest="900">
         <Label 
-            Text="Existing Estates"
-            VerticalOptions="Center" 
-            FontSize="Small" />
-        <HorizontalStackLayout>
-            <CollectionView  x:Name="EstateCollection"
-                             SelectionMode="Single"
-                             SelectionChanged="OnSelectionChanged"
-                             ItemsUpdatingScrollMode="KeepLastItemInView"
-                             EmptyView="No estates yet.">
-                <CollectionView.ItemTemplate>
+                    Text="Existing Estates"
+                    VerticalOptions="Center" 
+                    FontSize="Small" />
+        <HorizontalStackLayout Spacing="5" Padding="5">
+            <ListView x:Name="EstateCollection"
+                      SelectionMode="Single"
+                      CachingStrategy="RecycleElement"
+                      HasUnevenRows="False"
+                      SeparatorVisibility="None"
+                      ItemSelected="OnEstateSelectionChanged"
+                      Margin="5,5,5,5">
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Text="{Binding .}" />
+                        <ViewCell Height="32">
+                            <Label Text="{Binding .}" />
+                        </ViewCell>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            <VerticalStackLayout x:Name="EstateDetails">
-            </VerticalStackLayout>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <VerticalStackLayout x:Name="EstateDetails" />
+
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentView>
-    
