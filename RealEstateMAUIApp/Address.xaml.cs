@@ -25,7 +25,7 @@ public partial class Address : ContentView
     }
 
     /// <summary>
-    /// Sets the fields in the contorl with a supplied Address class.
+    /// Sets the fields in the Component with a supplied AddressDTO.
     /// </summary>
     /// <param name="addressDTO">AdressDTO to set the adress with.</param>
     public void SetAddress(AddressDTO addressDTO)
@@ -33,7 +33,7 @@ public partial class Address : ContentView
         Street.Text = addressDTO.Street;
         City.Text = addressDTO.City;
         ZipCode.Text = addressDTO.ZipCode;
-        CountryPicker.SelectedItem = addressDTO.Country;
+        CountryPicker.SelectedIndex = addressDTO.Country;
     }
 
     /// <summary>
