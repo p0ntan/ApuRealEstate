@@ -41,7 +41,7 @@ public class EstateMapper
         };
 
         if (person is Buyer buyer)
-            buyer.Payment = MapPayment(personDTO.Payment);
+            buyer.Payment = MapPayment(((BuyerDTO)personDTO).Payment);
 
         return person;
     }
