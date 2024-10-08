@@ -35,7 +35,12 @@ public partial class Person : ContentView
     public PersonDTO GetPerson(PaymentDTO? payment = null)
     {
         AddressDTO address = PersonAddress.GetAddress();
-        PersonDTO person = new (FirstName.Text, LastName.Text, address, payment);
+        PersonDTO person = Title switch
+        {
+            "Seller" => new SellerDTO { FirstName = FirstName.Text, LastName = LastName.Text, Address = address },
+            "Buyer" => new BuyerDTO { FirstName = FirstName.Text, LastName = LastName.Text, Address = address, Payment = payment },
+            _ => new SellerDTO { FirstName = FirstName.Text, LastName = LastName.Text, Address = address }
+        };
 
         return person;
     }

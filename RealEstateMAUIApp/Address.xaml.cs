@@ -44,7 +44,7 @@ public partial class Address : ContentView
     {
         int country = CountryPicker.SelectedIndex;
 
-        AddressDTO addressDTO = new (Street.Text, City.Text, ZipCode.Text, country);
+        AddressDTO addressDTO = new AddressDTO { Street = Street.Text, City = City.Text, ZipCode = ZipCode.Text, Country = country };
 
         return addressDTO;
     }
