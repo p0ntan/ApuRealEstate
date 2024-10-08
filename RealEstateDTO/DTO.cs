@@ -14,69 +14,31 @@ public record EstateCreateDTO(
     int SpecificDataTwo
     );
 
-public abstract record EstateDTO
-{
-    public int ID { get; init; }
-    public int LegalForm { get; init; }
-    public AddressDTO Address { get; init; }
-    public PersonDTO Seller { get; init; }
-    public PersonDTO Buyer { get; init; }
-}
-
-// Estate types
-public abstract record ResidentialDTO : EstateDTO
-{
-    public int Area { get; init; }
-    public int Bedrooms { get; init; }
-}
-
-public abstract record CommercialDTO : EstateDTO
-{
-    public int YearBuilt { get; init; }
-    public int YearlyRevenue { get; init; }
-}
-
-public abstract record InstitutionalDTO : EstateDTO
-{
-    public int EstablishedYear { get; init; }
-    public int NumberOfBuildings { get; init; }
-}
-
-// Specific estates
-// Residentials
-public record VillaDTO : ResidentialDTO
-{
-    public int Floors { get; init; }
-    public int PlotArea { get; init; }
-}
-public record ApartmentDTO : ResidentialDTO
-{
-    public int OnFloor { get; init; }
-    public int MonthlyCost { get; init; }
-}
-
-public record RowHouseDTO : VillaDTO {}
-public record RentalDTO : ApartmentDTO { }
-public record TenementDTO : ApartmentDTO { }
-
-// Commercials
-public record HotelDTO : CommercialDTO
-{
-    public int NumberOfBeds { get; init; }
-    public int NumberOfParkingSpots { get; init; }
-}
-
 // Person DTOs
-public record PersonDTO(
-    string FirstName,
-    string LastName,
-    AddressDTO Address,
-    PaymentDTO? Payment
-    );
+public abstract record PersonDTO
+{
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    public AddressDTO Address { get; init; }
+}
+
+public record SellerDTO() : PersonDTO
+{ }
+
+public record BuyerDTO() : PersonDTO
+{
+    public PaymentDTO? Payment { get; init; }
+}
 
 // Address DTO
 
-public record AddressDTO(string Street, string City, string ZipCode, int Country);
+public record AddressDTO()
+{
+    public string Street { get; init; }
+    public string City { get; init; }
+    public string ZipCode { get; init; }
+    public int Country { get; init; }
+}
 
 // Payment DTOs
 public abstract record PaymentDTO
