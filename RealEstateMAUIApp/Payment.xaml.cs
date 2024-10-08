@@ -2,6 +2,7 @@
 using RealEstateMAUIApp.Enums;
 using RealEstateDTO;
 using UtilitiesLib;
+using RealEstateBLL.Estates;
 
 namespace RealEstateMAUIApp;
 
@@ -66,7 +67,7 @@ public partial class Payment : ContentView
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void PaymentTypeChanged(object sender, EventArgs e)
+    private void PaymentIndexTypeChanged(object sender, EventArgs e)
     {
         PaymentType paymentType = (PaymentType)PaymentPicker.SelectedIndex;
 
@@ -94,10 +95,29 @@ public partial class Payment : ContentView
     }
 
     /// <summary>
+    /// Set the payment with given payment DTO.
+    /// </summary>
+    /// <param name="paymentDTO">Payment to set fields with</param>
+    public void SetPayment(PaymentDTO? paymentDTO)
+    {
+        (int paymentIndex, string typeOneData, string typeTwoData) paymentInfo = paymentDTO switch
+        {
+            BankDTO specs => ((int)PaymentType.Bank, specs.Name.ToString(), specs.AccountNumber.ToString()),
+            PaypalDTO specs => ((int)PaymentType.Paypal, specs.Email.ToString(), ""),
+            WesternUnionDTO specs => ((int)PaymentType.Western_Union, specs.Name.ToString(), specs.Email.ToString()),
+            _ => (PaymentPicker.SelectedIndex, "", "")
+        };
+
+        PaymentPicker.SelectedIndex = paymentInfo.paymentIndex;
+        Amount.Text = paymentDTO?.Amount.ToString();
+        txtPayment1.Text = paymentInfo.typeOneData;
+        txtPayment2.Text = paymentInfo.typeTwoData;
+    }
+
+    /// <summary>
     /// Returns the paymentDTO as in form. Before getting the payment the ValidatePayment should be used to make sure all fields are validated.
     /// </summary>
     /// <returns>Chosen payment with data.</returns>
-    /// <exception cref="Exception"></exception>
     public PaymentDTO? GetPayment()
     {
         PaymentType paymentType = (PaymentType)PaymentPicker.SelectedIndex;

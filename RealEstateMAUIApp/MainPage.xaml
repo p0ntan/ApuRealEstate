@@ -18,8 +18,8 @@
                                 <Label Text="Estate Info" FontSize="Small" />
                                 <Label Text="" x:Name="EstateId" FontSize="Small" TextColor="{StaticResource Gray400}" />
                             </FlexLayout>
-                            <Picker x:Name="EstateTypePicker" SelectedIndexChanged="EstateTypeChanged" />
-                            <Picker x:Name="SpecificTypePicker" SelectedIndexChanged="SpecificTypeChanged" />
+                            <Picker x:Name="EstateTypePicker" SelectedIndexChanged="EstateTypeIndexChanged" />
+                            <Picker x:Name="SpecificTypePicker" SelectedIndexChanged="SpecificTypeIndexChanged" />
                             <Picker x:Name="LegalFormPicker" />
                         </VerticalStackLayout>
                         <VerticalStackLayout Spacing="5" Padding="5" MinimumWidthRequest="300" MaximumWidthRequest="300">

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RealEstateMAUIApp.Payment">
     <VerticalStackLayout Spacing="5" MinimumHeightRequest="145">
-        <Picker x:Name="PaymentPicker" SelectedIndexChanged="PaymentTypeChanged" />
+        <Picker x:Name="PaymentPicker" SelectedIndexChanged="PaymentIndexTypeChanged" />
         <Entry x:Name="Amount" Placeholder="Amount" />
         <Entry x:Name="txtPayment1" Placeholder="txtPayment1" />
         <Entry x:Name="txtPayment2" Placeholder="txtPayment1" />

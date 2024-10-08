@@ -2,7 +2,6 @@
 using RealEstateDTO;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
-using System.Runtime.CompilerServices;
 using UtilitiesLib;
 
 namespace RealEstateMAUIApp;
@@ -73,7 +72,7 @@ public partial class MainPage : ContentPage
             // Message user, and update form with new ID
             if (response.success)
             {
-                UpdateGuiForExistingEstate(response.newId);
+                AddIdAndDisableButtons(response.newId);
                 ExistingEstates.UpdateList();
                 BtnUpdate.Focus();
                 await DisplayAlert("Estate Added", $"Estate added with id {response.newId}", "OK");
@@ -95,7 +94,7 @@ public partial class MainPage : ContentPage
     /// Updates the GUI by setting the ID to given id and disables buttons.
     /// </summary>
     /// <param name="estateId">Estate id to show in form.</param>
-    private void UpdateGuiForExistingEstate(int estateId)
+    private void AddIdAndDisableButtons(int estateId)
     {
         EstateId.Text = estateId.ToString();
 
@@ -127,20 +126,53 @@ public partial class MainPage : ContentPage
     private void UpdateFormWithEstate(int estateId)
     {
         EstateService estateService = EstateService.GetInstance();
-        EstateCreateDTO? estate = estateService.GetEstate(estateId);
+        EstateDTO? estate = estateService.GetEstate(estateId);
 
         if (estate == null) return;
 
-        UpdateGuiForExistingEstate(estate.estateId ?? -1);
-        EstateTypePicker.SelectedIndex = estate.EstateType;
-        SpecificTypePicker.SelectedIndex = estate.SpecificTypeIndex;
+        AddIdAndDisableButtons(estate.ID);
 
-        txtType1.Text = estate.TypeDataOne.ToString();
-        txtType2.Text = estate.TypeDataTwo.ToString();
-        txtSpecific1.Text = estate.SpecificDataOne.ToString();
-        txtSpecific2.Text = estate.SpecificDataTwo.ToString();
+        (int estateTypeIndex, string typeOneData, string typeTwoData) estateTypeInfo = estate switch
+        {
+            ResidentialDTO res => ((int)EstateType.Residential, res.Area.ToString(), res.Bedrooms.ToString()),
+            CommercialDTO comm => ((int)EstateType.Residential, comm.YearBuilt.ToString(), comm.YearlyRevenue.ToString()),
+            InstitutionalDTO ins => ((int)EstateType.Residential, ins.EstablishedYear.ToString(), ins.NumberOfBuildings.ToString()),
+            _ => (EstateTypePicker.SelectedIndex, "", "")
+        };
+
+        EstateTypePicker.SelectedIndex = estateTypeInfo.estateTypeIndex;
+        txtType1.Text = estateTypeInfo.typeOneData;
+        txtType2.Text = estateTypeInfo.typeTwoData;
+
+        (int specificIndex, string specificOneData, string specificTwoData) specificData = estate switch
+        {
+            RowhouseDTO specs => ((int)ResidentialType.Rowhouse, specs.Floors.ToString(), specs.PlotArea.ToString()),
+            VillaDTO specs => ((int)ResidentialType.Villa, specs.Floors.ToString(), specs.PlotArea.ToString()),
+            RentalDTO specs => ((int)ResidentialType.Rental, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
+            TenementDTO specs => ((int)ResidentialType.Tenement, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
+            FactoryDTO specs => ((int)CommercialType.Factory, specs.ProductionCapacity.ToString(), specs.NumberOfEmployees.ToString()),
+            ShopDTO specs => ((int)CommercialType.Shop, specs.CustomerCapacity.ToString(), specs.StorageArea.ToString()),
+            HotelDTO specs => ((int)CommercialType.Hotel, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
+            WarehouseDTO specs => ((int)CommercialType.Warehouse, specs.StorageArea.ToString(), specs.NumberOfLoadingDocks.ToString()),
+            SchoolDTO specs => ((int)InstitutionalType.School, specs.NumberOfTeachers.ToString(), specs.StudentCapacity.ToString()),
+            UniversityDTO specs => ((int)InstitutionalType.University, specs.CampusArea.ToString(), specs.StudentCapacity.ToString()),
+            HospitalDTO specs => ((int)InstitutionalType.Hospital, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
+            _ => (SpecificTypePicker.SelectedIndex, "", "")
+        };
+
+        SpecificTypePicker.SelectedIndex = specificData.specificIndex;
+        txtSpecific1.Text = specificData.specificOneData;
+        txtSpecific2.Text = specificData.specificTwoData;
 
         EstateAddress.SetAddress(estate.Address);
+        Seller.SetPerson(estate.Seller);
+        Buyer.SetPerson(estate.Buyer);
+
+        if (estate.Buyer.Payment != null)
+        {
+            IncludePayment.IsChecked = true;
+            Payment.SetPayment(estate.Buyer?.Payment);
+        }
     }
 
     private async void OnDeleteEstate(object sender, EventArgs e)
@@ -270,7 +302,7 @@ public partial class MainPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void EstateTypeChanged(object sender, EventArgs e)
+    private void EstateTypeIndexChanged(object sender, EventArgs e)
     {
         EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
 
@@ -295,7 +327,7 @@ public partial class MainPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void SpecificTypeChanged(object sender, EventArgs e)
+    private void SpecificTypeIndexChanged(object sender, EventArgs e)
     {
         EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
 

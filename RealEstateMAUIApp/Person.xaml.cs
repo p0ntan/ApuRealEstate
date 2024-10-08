@@ -1,5 +1,7 @@
 // Created by Pontus Åkerberg 2024-10-05
 using RealEstateDTO;
+using System.IO;
+using System.Reflection.Emit;
 
 namespace RealEstateMAUIApp;
 
@@ -24,6 +26,17 @@ public partial class Person : ContentView
     public Person()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Sets the fields in the component with a supplied PersonDTO.
+    /// </summary>
+    /// <param name="personDTO">PersonDTO to set the fields with.</param>
+    public void SetPerson(PersonDTO personDTO)
+    {
+        FirstName.Text = personDTO.FirstName;
+        LastName.Text = personDTO.LastName;
+        PersonAddress.SetAddress(personDTO.Address);
     }
 
     /// <summary>
