@@ -1,7 +1,7 @@
 ﻿namespace RealEstateDTO;
 
 public record EstateCreateDTO(
-    int? estateId,
+    int ID,
     int EstateType,
     int SpecificTypeIndex,
     int LegalForm,
@@ -12,10 +12,10 @@ public record EstateCreateDTO(
     int TypeDataTwo,
     int SpecificDataOne,
     int SpecificDataTwo
-    );
+);
 
 // Person DTOs
-public abstract record PersonDTO
+public record PersonDTO
 {
     public string FirstName { get; init; }
     public string LastName { get; init; }
