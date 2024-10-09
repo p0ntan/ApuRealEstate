@@ -1,5 +1,4 @@
 ﻿// Created by Pontus Åkerberg 2024-10-06
-
 using RealEstateBLL.Estates;
 using RealEstateBLL.Payments;
 using RealEstateBLL.Persons;
@@ -8,7 +7,7 @@ using RealEstateDTO;
 
 namespace RealEstateService;
 
-public class EstateMapper
+public class DTOMapper
 {
     public static EstateType MapEstateType(int estateIndex)
     {

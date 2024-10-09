@@ -2,7 +2,6 @@
 using RealEstateBLL;
 using RealEstateBLL.Estates;
 using RealEstateBLL.Manager;
-using RealEstateBLL.Persons;
 using RealEstateDTO;
 
 namespace RealEstateService;
@@ -13,14 +12,11 @@ namespace RealEstateService;
 public class EstateService
 {
     private EstateManager _estateManager;
-    private Mapper _mapper;
-
     private static EstateService? _estateService;
 
     private EstateService()
     {
         _estateManager = new();
-        _mapper = new();
     }
 
     public static EstateService GetInstance()
@@ -48,29 +44,11 @@ public class EstateService
     /// </summary>
     /// <param name="estate">EstateDTO to add to system.</param>
     /// <returns>Boolean if success and the new id of the estate to show for user.</returns>
-    public (bool, int) CreateEstate(EstateCreateDTO estate)
+    public (bool, int) CreateEstate(EstateDTO estateDTO)
     {
-        // Map all details and create classes
-        EstateType eType = EstateMapper.MapEstateType(estate.EstateType);
-        Address estateAddress = EstateMapper.MapAddress(estate.Address);
-        Seller? seller = (Seller?)EstateMapper.MapPerson(PersonType.Seller, estate.Seller);
-        Buyer? buyer = (Buyer?)EstateMapper.MapPerson(PersonType.Buyer, estate.Buyer);
+        BLLService bllService = new(_estateManager);
 
-        // Build estate
-        EstateBuilder estateBuilder = new EstateBuilder(eType, estate.SpecificTypeIndex)
-            .AddLegalForm((LegalForm)estate.LegalForm)
-            .AddAddress(estateAddress)
-            .AddSeller(seller)
-            .AddBuyer(buyer)
-            .AddEstateTypeDetails((estate.TypeDataOne, estate.TypeDataTwo))
-            .AddEstateSpecificDetails((estate.SpecificDataOne, estate.SpecificDataTwo));
-
-        Estate newEstate = estateBuilder.Build();
-
-        // Add estate to Manager, using the add without given key to let the manager set the key.
-        bool added = _estateManager.Add(newEstate);
-
-        return (added, newEstate.ID);
+        return bllService.CreateEstate(estateDTO);
     }
 
     /// <summary>
@@ -85,6 +63,14 @@ public class EstateService
         return isDeleted;
     }
 
+    public bool UpdateEstate(EstateDTO estateDTO)
+    {
+        BLLService bllService = new(_estateManager);
+        bool isUpdated = bllService.UpdateEstate(estateDTO);
+
+        return isUpdated;
+    }
+
     /// <summary>
     /// Reads an estate from the system/manager. Method is to be seen as the Read in a CRUD API.
     /// </summary>
@@ -92,26 +78,8 @@ public class EstateService
     /// <returns></returns>
     public EstateDTO? GetEstate(int estateID)
     {
-        Estate? estate = _estateManager.Get(estateID);
-
-        if (estate == null)
-            return null;
-
-        EstateDTO? estateDTO = estate switch
-        {
-            Rowhouse rowhouse => _mapper.MapToDTO<Rowhouse, RowhouseDTO>(rowhouse),
-            Villa villa => _mapper.MapToDTO<Villa, VillaDTO>(villa),
-            Rental rental => _mapper.MapToDTO<Rental, RentalDTO>(rental),
-            Tenement tenement => _mapper.MapToDTO<Tenement, TenementDTO>(tenement),
-            Apartment apartment => _mapper.MapToDTO<Apartment, ApartmentDTO>(apartment),
-            Hospital hospital => _mapper.MapToDTO<Hospital, HospitalDTO>(hospital),
-            School school => _mapper.MapToDTO<School, SchoolDTO>(school),
-            University university => _mapper.MapToDTO<University, UniversityDTO>(university),
-            Shop shop => _mapper.MapToDTO<Shop, ShopDTO>(shop),
-            Factory factory => _mapper.MapToDTO<Factory, FactoryDTO>(factory),
-            Warehouse warehouse => _mapper.MapToDTO<Warehouse, WarehouseDTO>(warehouse),
-            _ => null
-        };
+        BLLService bllService = new(_estateManager);
+        EstateDTO? estateDTO = bllService.GetEstate(estateID);
 
         return estateDTO;
     }
