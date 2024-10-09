@@ -1,11 +1,8 @@
 ﻿using RealEstateBLL.Estates;
-using RealEstateBLL.Payments;
 using RealEstateBLL.Persons;
-using System.Runtime.Serialization;
 
 namespace RealEstateBLL.Manager;
 
-[DataContract(Name = "EstateBuilder", Namespace = "")]
 public class EstateBuilder
 {
     private Estate _estate;

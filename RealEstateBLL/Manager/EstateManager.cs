@@ -10,26 +10,22 @@ namespace RealEstateBLL.Manager;
 [DataContract]
 public class EstateManager : DictionaryManager<int, Estate>
 {
-    /// <summary>
-    /// Id for each estate, should be unique for each estate in manager.
-    /// </summary>
-    [DataMember(Name = "NextID")]
-    private int _nextId = 10000;
 
     /// <summary>
     /// Adds an new item to the manager, making the manager choose the unique id for the new estate.
-    /// Using the _nextId to sets the unique ID of the Estate and use that key.
+    /// Checks the highest current ID in dictionary and uses the number after as new id.
     /// </summary>
     /// <param name="item"></param>
     /// <returns>True if added, false if not.</returns>
     public bool Add(Estate item)
     {
-        item.ID = _nextId;
+        // Get the highest id in dictionary and add one to get new unique id.
+        // If no items in dictonary use 10000 as first id.
+        int newId = Dictionary.Keys.Any() ? this.Dictionary.Keys.Max() + 1: 10000;
+
+        item.ID = newId;
 
         bool itemAdded = Add(item.ID, item);  // Using the base Add method.
-
-        if (itemAdded)
-            _nextId++;
 
         return itemAdded;
     }

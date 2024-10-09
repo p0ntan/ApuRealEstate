@@ -132,10 +132,12 @@ public class DictionaryManager<TKey, TValue> : IDictionaryManager<TKey, TValue> 
     /// <returns>Array of items as strings.</returns>
     public string[] ToStringArray()
     {
+        IEnumerable<TValue> sortedValues = _dictionary.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
+
         string[] strings = new string[_dictionary.Count];
         int index = 0;
 
-        foreach (TValue itemValue in _dictionary.Values)
+        foreach (TValue itemValue in sortedValues)
         {
             strings[index] = itemValue?.ToString() ?? string.Empty;
             index++;
