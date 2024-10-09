@@ -1,6 +1,7 @@
 ﻿// Created by Pontus Åkerberg 2024-10-05
 using RealEstateBLL.Estates;
 using RealEstateBLL.Manager;
+using RealEstateDAL;
 using RealEstateDTO;
 
 namespace RealEstateBLL;
@@ -97,5 +98,20 @@ public class BLLService
         };
 
         return estate;
+    }
+
+    public bool SaveToFile(string filePath)
+    {
+        string fileExtension = Path.GetExtension(filePath).ToLower();
+
+        switch (fileExtension)
+        {
+            case ".json":
+                return FileHandler.SaveAsJson<EstateManager>(filePath, _estateManager);
+            case ".xml":
+                return FileHandler.SaveAsXML<EstateManager>(filePath, _estateManager);
+            default:
+                return false;
+        }
     }
 }
