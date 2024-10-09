@@ -1,5 +1,6 @@
 ﻿// Created by Pontus Åkerberg 2024-10-05
 using RealEstateDTO;
+using RealEstateMAUIApp.Services;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
 using UtilitiesLib;
@@ -8,17 +9,21 @@ namespace RealEstateMAUIApp;
 
 public partial class MainPage : ContentPage
 {
+    private string _currentFilePath;
     private bool _formHasChanges;
+
     public MainPage()
     {
         InitializeComponent();
         InitializeGUI();
 
         _formHasChanges = false;
+        _currentFilePath = string.Empty;
 
         ExistingEstates.SelectedEstateChanged += SelectedEstateChanges;
     }
 
+    #region Initializeing GUI
     private void InitializeGUI()
     {
         AddEstateTypes();
@@ -46,7 +51,9 @@ public partial class MainPage : ContentPage
         LegalFormPicker.ItemsSource = Enum.GetNames(typeof(LegalForm));
         LegalFormPicker.SelectedIndex = 0;
     }
+    #endregion
 
+    #region Form Events
     /// <summary>
     /// Validates the inputs before creating an DTO for new estates.
     /// Sends the created DTO to the servicelayer, recives a boolean if created and the new id for the estate.
@@ -166,6 +173,364 @@ public partial class MainPage : ContentPage
     }
 
     /// <summary>
+    /// Enables or disables payment if cheked.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void IncludePaymentCheckbox(object sender, EventArgs e)
+    {
+        Payment.IsEnabled = IncludePayment.IsChecked;
+    }
+
+    /// <summary>
+    /// Update form when changeing type of estate (Residential etc.)
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void EstateTypeIndexChanged(object sender, EventArgs e)
+    {
+        EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
+
+        SpecificTypePicker.SelectedIndex = -1;  // Set to -1 if index is out of range for other estattype
+
+        switch (estateType)
+        {
+            case EstateType.Residential:
+                UpdateGUIForResidentials();
+                break;
+            case EstateType.Commercial:
+                UpdateGUIForCommercials();
+                break;
+            case EstateType.Institutional:
+                UpdateGUIForInstitutionals();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Update form when changeing type of specific estate (Villa, Hotel etc.)
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void SpecificTypeIndexChanged(object sender, EventArgs e)
+    {
+        EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
+
+        // Setting the "default" value to Ownership when chaning estate type. 
+        // Rental and Tenement changes this by itself but can be overrrun.
+        LegalFormPicker.SelectedIndex = (int)LegalForm.Ownership;
+
+        switch (estateType)
+        {
+            case EstateType.Residential:
+                UpdateGUIForSpecificResidential();
+                break;
+            case EstateType.Commercial:
+                UpdateGUIForSpecificCommercial();
+                break;
+            case EstateType.Institutional:
+                UpdateGUIForSpecificInstitutional();
+                break;
+        }
+    }
+    #endregion
+
+    #region Menu Events
+    /// <summary>
+    /// Controls if there is any unsaved data, asking the user if it should be saved then resets the application to it's original state.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnNewClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            if (HasUnsavedChanges())
+            {
+                bool changesHandled = await HandleUnsavedChanges();
+
+                if (!changesHandled)
+                    return;
+            }
+
+            ResetApplication();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message.ToString(), "OK");
+        }
+    }
+
+    /// <summary>
+    /// Controls if there is any unsaved data, asking the user if it should be saved then opens dialog to open a new file.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnOpenJSONClicked(object sender, EventArgs e)
+    {
+        if (HasUnsavedChanges())
+        {
+            bool changesHandled = await HandleUnsavedChanges();
+
+            if (!changesHandled)
+                return;
+        }
+
+        PickOptions options = new PickOptions
+        {
+            PickerTitle = "Please select a JSON file",
+            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+        {
+            { DevicePlatform.WinUI, new[] { ".json" } },
+            { DevicePlatform.iOS, new[] { "public.json" } }
+        })
+        };
+
+        var filePath = await FilePicker.Default.PickAsync(options);
+
+        if (filePath?.FullPath == null)
+            return;
+
+        EstateService eService = EstateService.GetInstance();
+        eService.LoadFromFile(filePath.FullPath);
+    }
+
+    /// <summary>
+    /// Opens a file dialog to open a XML file.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnOpenXMLClicked(object sender, EventArgs e)
+    {
+        if (HasUnsavedChanges())
+        {
+            bool changesHandled = await HandleUnsavedChanges();
+
+            if (!changesHandled)
+                return;
+        }
+
+        PickOptions options = new PickOptions
+        {
+            PickerTitle = "Please select a XML file",
+            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+        {
+            { DevicePlatform.WinUI, new[] { ".xml" } },
+            { DevicePlatform.iOS, new[] { "public.xml" } }
+        })
+        };
+        var filePath = await FilePicker.Default.PickAsync(options);
+
+        if (filePath?.FullPath == null)
+            return;
+
+        EstateService.GetInstance().LoadFromFile(filePath.FullPath);
+    }
+
+    /// <summary>
+    /// Saves the current state of application if the _currentFilePath is set. Else it uses same logic as for Save As.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnSaveClicked(object sender, EventArgs e)
+    {
+        await SaveChanges();
+    }
+
+    /// <summary>
+    /// Saves the current state to a JSON-file.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnSaveAsJSONClicked(object sender, EventArgs e)
+    {
+        var fileTypes = new Dictionary<string, List<string>>()
+        {
+            { "JSON Files (*.json)", new List<string> { ".json" } },
+        };
+        string? filePath = await GetFilePathUsingDialog(fileTypes);
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            await DisplayAlert("", "No file chosen.", "OK");
+            return;
+        }
+
+        if (_formHasChanges)
+        {
+            bool estateSaved = true;
+
+            if (!estateSaved)
+                return;
+        }
+
+        EstateService eService = EstateService.GetInstance();
+
+        if (eService.SaveToFile(filePath))
+        {
+            await DisplayAlert("", "File saved.", "OK");
+            _currentFilePath = filePath;
+        }
+        else
+            await DisplayAlert("", "Problem when saving file, control form input and filename.", "OK");
+    }
+
+    /// <summary>
+    /// Saves the current state of application as XML.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnSaveAsXMLClicked(object sender, EventArgs e)
+    {
+        var fileTypes = new Dictionary<string, List<string>>()
+        {
+            { "XML files (*.xml)", new List<string> { ".XML" } },
+        };
+        string? filePath = await GetFilePathUsingDialog(fileTypes);
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            await DisplayAlert("", "No file chosen.", "OK");
+            return;
+        }
+
+        if (_formHasChanges)
+        {
+            bool estateSaved = true;
+
+            if (!estateSaved)
+                return;
+        }
+
+        EstateService eService = EstateService.GetInstance();
+
+        if (eService.SaveToFile(filePath))
+        {
+            await DisplayAlert("", "File saved.", "OK");
+            _currentFilePath = filePath;
+        }
+        else
+            await DisplayAlert("", "Problem when saving file, control form input and filename.", "OK");
+    }
+
+    /// <summary>
+    /// Controls if there is any unsaved data, asking the user if it should be saved then exits the application.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void OnExitClicked(object sender, EventArgs e)
+    {
+        if (HasUnsavedChanges())
+        {
+            bool changesHandled = await HandleUnsavedChanges();
+
+            if (!changesHandled)
+                return;
+        }
+
+        Application.Current?.Quit();
+    }
+    #endregion
+
+    /// <summary>
+    /// Returns true if there are any changes in manager or in form.
+    /// </summary>
+    /// <returns>True if there are changes, false if not.</returns>
+    public bool HasUnsavedChanges()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// Handles the unsaved changes, by first asking user what they want to do and then 
+    /// </summary>
+    /// <returns>True if changes are handled, false if not.</returns>
+    private async Task<bool> HandleUnsavedChanges()
+    {
+        // String is changed if there are changes in the current form
+        string changesInForm = string.Empty;
+
+        if (_formHasChanges)
+            changesInForm = "\n\n(Includes the current estate in the form.)";
+
+        bool wantsToSave = await DisplayAlert("Unsaved changes", "Do you want to save your unsaved changes?" + changesInForm, "Yes", "No");
+
+        if (wantsToSave)
+            return await SaveChanges();  // Returns false if not saved
+
+        return true;
+    }
+
+    /// <summary>
+    /// Saves the changes by first getting the filepath, saves the current changes in form (if any) to manager.
+    /// Then saves the estatemanager to file.
+    /// </summary>
+    /// <returns>True if changes are saved, false if not.</returns>
+    private async Task<bool> SaveChanges()
+    {
+        string? filePath = await GetFilePathForSaving();
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            await DisplayAlert("", "No file chosen", "Ok");
+            return false;
+        }
+
+        if (_formHasChanges)
+        {
+            bool estateSaved = true;
+
+            if (!estateSaved)
+                return false;
+        }
+
+        EstateService eService = EstateService.GetInstance();
+
+        if (!eService.SaveToFile(filePath))
+        {
+            await DisplayAlert("", "Data not saved.", "Ok");
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the filepath by first checking if there is a current file opened, if not use dialog.
+    /// Gives the user option to choose json or xml.
+    /// </summary>
+    /// <returns>The filepath to file.</returns>
+    private async Task<string?> GetFilePathForSaving()
+    {
+        string? filePath = _currentFilePath;
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            var fileTypes = new Dictionary<string, List<string>>()
+            {
+                { "JSON Files (*.json)", new List<string> { ".json" } },
+                { "XML files (*.xml)", new List<string> { ".xml" } },
+            };
+            filePath = await GetFilePathUsingDialog(fileTypes);
+        }
+
+        return filePath;
+    }
+
+    /// <summary>
+    /// Gets the filepath from a user with a file dialog.
+    /// </summary>
+    /// <returns>Filepath as string</returns>
+    private async Task<string?> GetFilePathUsingDialog(Dictionary<string, List<string>> fileTypes)
+    {
+        string filePath = string.Empty;
+        var dialogService = new SaveFileDialogService();
+        string? selectedFilePath = await dialogService.ShowSaveFileDialogAsync(fileTypes);
+
+        return selectedFilePath;
+    }
+
+    /// <summary>
     /// Updates the GUI by setting the ID to given id and disables buttons.
     /// </summary>
     /// <param name="estateId">Estate id to show in form.</param>
@@ -182,8 +547,7 @@ public partial class MainPage : ContentPage
     {
         ResetForm();
 
-        EstateService estateService = EstateService.GetInstance();
-        EstateDTO? estate = estateService.GetEstate(estateId);
+        EstateDTO? estate = EstateService.GetInstance().GetEstate(estateId);
 
         if (estate == null) return;
 
@@ -333,68 +697,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    /// <summary>
-    /// Enables or disables payment if cheked.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void IncludePaymentCheckbox(object sender, EventArgs e)
-    {
-        Payment.IsEnabled = IncludePayment.IsChecked;
-    }
-
-    /// <summary>
-    /// Update form when changeing type of estate (Residential etc.)
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void EstateTypeIndexChanged(object sender, EventArgs e)
-    {
-        EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
-
-        SpecificTypePicker.SelectedIndex = -1;  // Set to -1 if index is out of range for other estattype
-
-        switch (estateType)
-        {
-            case EstateType.Residential:
-                UpdateGUIForResidentials();
-                break;
-            case EstateType.Commercial:
-                UpdateGUIForCommercials();
-                break;
-            case EstateType.Institutional:
-                UpdateGUIForInstitutionals();
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Update form when changeing type of specific estate (Villa, Hotel etc.)
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void SpecificTypeIndexChanged(object sender, EventArgs e)
-    {
-        EstateType estateType = (EstateType)EstateTypePicker.SelectedIndex;
-
-        // Setting the "default" value to Ownership when chaning estate type. 
-        // Rental and Tenement changes this by itself but can be overrrun.
-        LegalFormPicker.SelectedIndex = (int)LegalForm.Ownership;
-
-        switch (estateType)
-        {
-            case EstateType.Residential:
-                UpdateGUIForSpecificResidential();
-                break;
-            case EstateType.Commercial:
-                UpdateGUIForSpecificCommercial();
-                break;
-            case EstateType.Institutional:
-                UpdateGUIForSpecificInstitutional();
-                break;
-        }
-    }
-
     #region Update GUI methods when changing estate type
 
     /// <summary>
@@ -532,7 +834,6 @@ public partial class MainPage : ContentPage
         lblSpecific1.Text = firstLabel;
         lblSpecific2.Text = secondLabel;
     }
-
     #endregion
 
     /// <summary>
@@ -564,5 +865,20 @@ public partial class MainPage : ContentPage
         _formHasChanges = false;
 
         EstateTypePicker.Focus();
+    }
+
+    /// <summary>
+    /// Resets the whole application.
+    /// </summary>
+    private void ResetApplication()
+    {
+        ResetForm();
+
+        EstateService.GetInstance().ResetManager();
+
+        // Updating list after reseting manager will clear list.
+        ExistingEstates.UpdateList();  
+        _currentFilePath = string.Empty;
+        _formHasChanges = false;
     }
 }

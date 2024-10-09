@@ -7,23 +7,6 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Apu Real Estate">
 
-    <Shell.MenuBarItems>
-        <MenuBarItem Text="File">
-            <MenuFlyoutItem Text="New" Clicked="OnNewClicked" />
-            <MenuFlyoutSubItem Text="Open">
-                <MenuFlyoutItem Text="JSON" Clicked="OnOpenJSONClicked" />
-                <MenuFlyoutItem Text="XML" Clicked="OnOpenXMLClicked" />
-            </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="Save" Clicked="OnSaveClicked" />
-            <MenuFlyoutSubItem Text="Save As">
-                <MenuFlyoutItem Text="JSON" Clicked="OnSaveAsJSONClicked" />
-                <MenuFlyoutItem Text="XML" Clicked="OnSaveAsXMLClicked" />
-            </MenuFlyoutSubItem>
-            <MenuFlyoutSeparator />
-            <MenuFlyoutItem Text="Exit" Clicked="OnExitClicked" />
-        </MenuBarItem>
-    </Shell.MenuBarItems>
-
     <ShellContent
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
