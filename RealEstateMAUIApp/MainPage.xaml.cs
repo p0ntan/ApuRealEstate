@@ -9,7 +9,6 @@ namespace RealEstateMAUIApp;
 public partial class MainPage : ContentPage
 {
     private bool _formHasChanges;
-
     public MainPage()
     {
         InitializeComponent();
@@ -61,12 +60,10 @@ public partial class MainPage : ContentPage
             // Validate form
             ValidateForm();
 
-            EstateCreateDTO estateDTO = CreateEstateDTO();
+            EstateDTO estateDTO = CreateEstateDTO();
 
             // Use singleton for keeping same instance of EstateService
             EstateService estateService = EstateService.GetInstance();
-
-            // Send DTO to Servicelayer
             (bool success, int newId) response = estateService.CreateEstate(estateDTO);
 
             // Message user, and update form with new ID
@@ -90,88 +87,40 @@ public partial class MainPage : ContentPage
         }
     }
 
-    /// <summary>
-    /// Updates the GUI by setting the ID to given id and disables buttons.
-    /// </summary>
-    /// <param name="estateId">Estate id to show in form.</param>
-    private void AddIdAndDisableButtons(int estateId)
+
+    private async void OnUpdateEstate(object sender, EventArgs e)
     {
-        EstateId.Text = estateId.ToString();
-
-        EstateTypePicker.IsEnabled = false;
-        SpecificTypePicker.IsEnabled = false;
-        BtnAdd.IsEnabled = false;
-    }
-
-    private void OnUpdateEstate(object sender, EventArgs e)
-    {
-        ExistingEstates.UpdateList();
-        // Validate
-
-        // Create DTO
-
-        // Send DTO to Servicelayer
-    }
-
-    private async void SelectedEstateChanges(object sender, EstateChangedEventArgs e)
-    {
-        int estateId = e.Value;
-
-        if (_formHasChanges)
-            await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
-
-        UpdateFormWithEstate(estateId);
-    }
-
-    private void UpdateFormWithEstate(int estateId)
-    {
-        EstateService estateService = EstateService.GetInstance();
-        EstateDTO? estate = estateService.GetEstate(estateId);
-
-        if (estate == null) return;
-
-        AddIdAndDisableButtons(estate.ID);
-
-        (int estateTypeIndex, string typeOneData, string typeTwoData) estateTypeInfo = estate switch
+        try
         {
-            ResidentialDTO res => ((int)EstateType.Residential, res.Area.ToString(), res.Bedrooms.ToString()),
-            CommercialDTO comm => ((int)EstateType.Residential, comm.YearBuilt.ToString(), comm.YearlyRevenue.ToString()),
-            InstitutionalDTO ins => ((int)EstateType.Residential, ins.EstablishedYear.ToString(), ins.NumberOfBuildings.ToString()),
-            _ => (EstateTypePicker.SelectedIndex, "", "")
-        };
+            if (string.IsNullOrEmpty(EstateId.Text))
+            {
+                await DisplayAlert("Add estate", "Add estate before updating.", "OK");
+                return;
+            }
 
-        EstateTypePicker.SelectedIndex = estateTypeInfo.estateTypeIndex;
-        txtType1.Text = estateTypeInfo.typeOneData;
-        txtType2.Text = estateTypeInfo.typeTwoData;
+            ValidateForm();
 
-        (int specificIndex, string specificOneData, string specificTwoData) specificData = estate switch
+            EstateDTO estateDTO = CreateEstateDTO();
+            EstateService estateService = EstateService.GetInstance();
+            bool success = estateService.UpdateEstate(estateDTO);
+
+            if (success)
+            {
+                ExistingEstates.UpdateList();
+                BtnUpdate.Focus();
+
+                await DisplayAlert("Estate Updated", $"Estate updated with id {EstateId.Text}", "OK");
+            }
+            else
+                await DisplayAlert("Estate Not Updated", "Control inputs, couldn't update estate.", "OK");
+        }
+        catch (FormatException ex)
         {
-            RowhouseDTO specs => ((int)ResidentialType.Rowhouse, specs.Floors.ToString(), specs.PlotArea.ToString()),
-            VillaDTO specs => ((int)ResidentialType.Villa, specs.Floors.ToString(), specs.PlotArea.ToString()),
-            RentalDTO specs => ((int)ResidentialType.Rental, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
-            TenementDTO specs => ((int)ResidentialType.Tenement, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
-            FactoryDTO specs => ((int)CommercialType.Factory, specs.ProductionCapacity.ToString(), specs.NumberOfEmployees.ToString()),
-            ShopDTO specs => ((int)CommercialType.Shop, specs.CustomerCapacity.ToString(), specs.StorageArea.ToString()),
-            HotelDTO specs => ((int)CommercialType.Hotel, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
-            WarehouseDTO specs => ((int)CommercialType.Warehouse, specs.StorageArea.ToString(), specs.NumberOfLoadingDocks.ToString()),
-            SchoolDTO specs => ((int)InstitutionalType.School, specs.NumberOfTeachers.ToString(), specs.StudentCapacity.ToString()),
-            UniversityDTO specs => ((int)InstitutionalType.University, specs.CampusArea.ToString(), specs.StudentCapacity.ToString()),
-            HospitalDTO specs => ((int)InstitutionalType.Hospital, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
-            _ => (SpecificTypePicker.SelectedIndex, "", "")
-        };
-
-        SpecificTypePicker.SelectedIndex = specificData.specificIndex;
-        txtSpecific1.Text = specificData.specificOneData;
-        txtSpecific2.Text = specificData.specificTwoData;
-
-        EstateAddress.SetAddress(estate.Address);
-        Seller.SetPerson(estate.Seller);
-        Buyer.SetPerson(estate.Buyer);
-
-        if (estate.Buyer.Payment != null)
+            await DisplayAlert("Wrong input", ex.Message, "OK")!;
+        }
+        catch (Exception ex)
         {
-            IncludePayment.IsChecked = true;
-            Payment.SetPayment(estate.Buyer?.Payment);
+            await DisplayAlert("Error", ex.Message, "OK")!;
         }
     }
 
@@ -205,6 +154,89 @@ public partial class MainPage : ContentPage
         {
             await DisplayAlert("Error", ex.Message, "OK")!;
         }
+    }
+
+    private async void SelectedEstateChanges(object sender, EstateChangedEventArgs e)
+    {
+        int estateId = e.Value;
+
+        if (_formHasChanges)
+            await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
+
+        UpdateFormWithEstate(estateId);
+    }
+
+    /// <summary>
+    /// Updates the GUI by setting the ID to given id and disables buttons.
+    /// </summary>
+    /// <param name="estateId">Estate id to show in form.</param>
+    private void AddIdAndDisableButtons(int estateId)
+    {
+        EstateId.Text = estateId.ToString();
+
+        EstateTypePicker.IsEnabled = false;
+        SpecificTypePicker.IsEnabled = false;
+        BtnAdd.IsEnabled = false;
+    }
+
+    private void UpdateFormWithEstate(int estateId)
+    {
+        EstateService estateService = EstateService.GetInstance();
+        EstateDTO? estate = estateService.GetEstate(estateId);
+
+        if (estate == null) return;
+
+        AddIdAndDisableButtons(estate.ID);
+
+        var estateTypeInfo = GetEstateTypeInfo(estate);
+        EstateTypePicker.SelectedIndex = estateTypeInfo.estateTypeIndex;
+        txtType1.Text = estateTypeInfo.typeOneData;
+        txtType2.Text = estateTypeInfo.typeTwoData;
+
+        var specificData = GetSpecificTypeInfo(estate);
+        SpecificTypePicker.SelectedIndex = specificData.specificIndex;
+        txtSpecific1.Text = specificData.specificOneData;
+        txtSpecific2.Text = specificData.specificTwoData;
+
+        EstateAddress.SetAddress(estate.Address);
+        Seller.SetPerson(estate.Seller);
+        Buyer.SetPerson(estate.Buyer);
+
+        if (estate.Buyer.Payment != null)
+        {
+            IncludePayment.IsChecked = true;
+            Payment.SetPayment(estate.Buyer?.Payment);
+        }
+    }
+
+    private (int estateTypeIndex, string typeOneData, string typeTwoData) GetEstateTypeInfo(EstateDTO estate)
+    {
+        return estate switch
+        {
+            ResidentialDTO res => ((int)EstateType.Residential, res.Area.ToString(), res.Bedrooms.ToString()),
+            CommercialDTO comm => ((int)EstateType.Commercial, comm.YearBuilt.ToString(), comm.YearlyRevenue.ToString()),
+            InstitutionalDTO ins => ((int)EstateType.Institutional, ins.EstablishedYear.ToString(), ins.NumberOfBuildings.ToString()),
+            _ => (EstateTypePicker.SelectedIndex, "", "")
+        };
+    }
+
+    private (int specificIndex, string specificOneData, string specificTwoData) GetSpecificTypeInfo(EstateDTO estate)
+    {
+        return estate switch
+        {
+            RowhouseDTO specs => ((int)ResidentialType.Rowhouse, specs.Floors.ToString(), specs.PlotArea.ToString()),
+            VillaDTO specs => ((int)ResidentialType.Villa, specs.Floors.ToString(), specs.PlotArea.ToString()),
+            RentalDTO specs => ((int)ResidentialType.Rental, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
+            TenementDTO specs => ((int)ResidentialType.Tenement, specs.OnFloor.ToString(), specs.MonthlyCost.ToString()),
+            FactoryDTO specs => ((int)CommercialType.Factory, specs.ProductionCapacity.ToString(), specs.NumberOfEmployees.ToString()),
+            ShopDTO specs => ((int)CommercialType.Shop, specs.CustomerCapacity.ToString(), specs.StorageArea.ToString()),
+            HotelDTO specs => ((int)CommercialType.Hotel, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
+            WarehouseDTO specs => ((int)CommercialType.Warehouse, specs.StorageArea.ToString(), specs.NumberOfLoadingDocks.ToString()),
+            SchoolDTO specs => ((int)InstitutionalType.School, specs.NumberOfTeachers.ToString(), specs.StudentCapacity.ToString()),
+            UniversityDTO specs => ((int)InstitutionalType.University, specs.CampusArea.ToString(), specs.StudentCapacity.ToString()),
+            HospitalDTO specs => ((int)InstitutionalType.Hospital, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
+            _ => (SpecificTypePicker.SelectedIndex, "", "")
+        };
     }
 
     /// <summary>
@@ -263,28 +295,41 @@ public partial class MainPage : ContentPage
     /// Creates a DTO for creating new estates. Method should run after the form as been validated.
     /// </summary>
     /// <returns>An comlete estate as DTO</returns>
-    private EstateCreateDTO CreateEstateDTO()
+    private EstateDTO CreateEstateDTO()
     {
-        PaymentDTO? paymentDTO = null;
+        try
+        {
+            int estateId = !string.IsNullOrEmpty(EstateId.Text) ? StringConverter.ConvertToInteger(EstateId.Text) : -1;
 
-        if (IncludePayment.IsChecked)
-            paymentDTO = Payment.GetPayment();
+            EstateType eType = (EstateType)EstateTypePicker.SelectedIndex;
+            int specificIndex = SpecificTypePicker.SelectedIndex;
+            int typeOne = StringConverter.ConvertToInteger(txtType1.Text, 0, 2500);
+            int typeTwo = StringConverter.ConvertToInteger(txtType2.Text);
+            int specOne = StringConverter.ConvertToInteger(txtSpecific1.Text);
+            int specTwo = StringConverter.ConvertToInteger(txtSpecific2.Text);
 
-        EstateCreateDTO estateDTO = new(
-            null,
-            EstateTypePicker.SelectedIndex,
-            SpecificTypePicker.SelectedIndex,
-            LegalFormPicker.SelectedIndex,
-            EstateAddress.GetAddress(),
-            Seller.GetPerson(),
-            Buyer.GetPerson(paymentDTO),
-            StringConverter.ConvertToInteger(txtType1.Text, 0, 2500),
-            StringConverter.ConvertToInteger(txtType2.Text),
-            StringConverter.ConvertToInteger(txtSpecific1.Text),
-            StringConverter.ConvertToInteger(txtSpecific2.Text)
-        );
+            PaymentDTO? paymentDTO = null;
 
-        return estateDTO;
+            if (IncludePayment.IsChecked)
+                paymentDTO = Payment.GetPayment();
+
+            EstateDTOBuilder dtoBuilder = new EstateDTOBuilder(eType, specificIndex)
+                .AddID(estateId)
+                .AddLegalForm(LegalFormPicker.SelectedIndex)
+                .AddAddress(EstateAddress.GetAddress())
+                .AddSeller((SellerDTO)Seller.GetPerson())
+                .AddBuyer((BuyerDTO)Buyer.GetPerson(paymentDTO))
+                .AddEstateTypeDetails((typeOne, typeTwo))
+                .AddEstateSpecificDetails((specOne, specTwo));
+
+            EstateDTO estateDTO = dtoBuilder.Build();
+
+            return estateDTO;
+        }
+        catch (FormatException ex)
+        {
+            throw new FormatException(ex.Message);
+        }
     }
 
     /// <summary>
