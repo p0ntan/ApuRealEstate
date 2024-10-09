@@ -8,8 +8,8 @@ public partial class ExistingsEstates : ContentView
     public event EventHandler<EstateChangedEventArgs>? SelectedEstateChanged = null;
 
     public ExistingsEstates()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
     }
 
     public void SelectNone()
@@ -17,14 +17,17 @@ public partial class ExistingsEstates : ContentView
         EstateCollection.SelectedItem = null;
     }
 
-	public void UpdateList()
-	{
+    public void UpdateList(int? estateID = null)
+    {
         EstateService estateService = EstateService.GetInstance();
 
         string[] estates = estateService.GetEstatesAsArrayOfStrings();
 
         EstateCollection.ItemsSource = estates;
-	}
+
+        if (estateID != null)
+            DisplayEstateDetails((int)estateID);
+    }
 
     private void OnEstateSelectionChanged(object sender, SelectedItemChangedEventArgs e)
     {
@@ -38,28 +41,30 @@ public partial class ExistingsEstates : ContentView
         if (string.IsNullOrEmpty(estateAsString))
             return;
 
-        string idAsString = estateAsString.Split(';')[0]; // Split string and take id from string
-
-        if (!int.TryParse(idAsString, out int idAsInt))
+        // Try parse id from estate string
+        if (!int.TryParse(estateAsString.Split(';')[0], out int estateID))
             return;
+
+        DisplayEstateDetails(estateID);
+
+        SelectedEstateChanged?.Invoke(this, new EstateChangedEventArgs(estateID));
+    }
+
+    private void DisplayEstateDetails(int estateID)
+    {
+        EstateDetails.Children.Clear();
 
         EstateService estateService = EstateService.GetInstance();
-        List<string>? estate = estateService.GetEstateAsListOfStrings(idAsInt);
+        List<string> estateDetails = estateService.GetEstateAsListOfStrings(estateID);
 
-        if (estate == null)
-            return;
-
-        foreach (var item in estate)
+        foreach (var item in estateDetails)
         {
             Label label = new Label()
             {
                 Text = item.ToString(),
             };
-
             EstateDetails.Children.Add(label);
         }
-
-        SelectedEstateChanged?.Invoke(this, new EstateChangedEventArgs(idAsInt));
     }
 }
 

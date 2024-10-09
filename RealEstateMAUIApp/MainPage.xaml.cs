@@ -87,7 +87,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-
     private async void OnUpdateEstate(object sender, EventArgs e)
     {
         try
@@ -106,7 +105,7 @@ public partial class MainPage : ContentPage
 
             if (success)
             {
-                ExistingEstates.UpdateList();
+                ExistingEstates.UpdateList(estateDTO.ID);
                 BtnUpdate.Focus();
 
                 await DisplayAlert("Estate Updated", $"Estate updated with id {EstateId.Text}", "OK");
@@ -181,6 +180,8 @@ public partial class MainPage : ContentPage
 
     private void UpdateFormWithEstate(int estateId)
     {
+        ResetForm();
+
         EstateService estateService = EstateService.GetInstance();
         EstateDTO? estate = estateService.GetEstate(estateId);
 
