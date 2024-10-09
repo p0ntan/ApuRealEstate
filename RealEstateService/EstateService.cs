@@ -103,4 +103,18 @@ public class EstateService
     {
         _estateManager = new EstateManager();
     }
+
+    public bool SaveToFile(string filePath)
+    {
+        string fileExtension = Path.GetExtension(filePath).ToLower();
+
+        BLLService bllService = new BLLService(_estateManager);
+
+        return bllService.SaveToFile(filePath);
+    }
+
+    public bool LoadFromFile(string filePath)
+    {
+        return true;
+    }
 }
