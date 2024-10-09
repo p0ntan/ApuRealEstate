@@ -27,14 +27,15 @@ public class EstateService
         return _estateService;
     }
 
-    public List<string>? GetEstateAsListOfStrings(int estateId)
+    public List<string> GetEstateAsListOfStrings(int estateId)
     {
         Estate? estate = _estateManager.Get(estateId);
+        List<string> strings = [];
 
         if (estate == null)
-            return null;
+            return strings;
 
-        List<string> strings = estate.GetDetailsAsList();
+        strings = estate.GetDetailsAsList();
 
         return strings;
     }
