@@ -48,6 +48,7 @@ public class EstateMapper
             cfg.CreateMap<School, SchoolDTO>();
             cfg.CreateMap<University, UniversityDTO>();
             cfg.CreateMap<Shop, ShopDTO>();
+            cfg.CreateMap<Hotel, HotelDTO>();
             cfg.CreateMap<Factory, FactoryDTO>();
             cfg.CreateMap<Warehouse, WarehouseDTO>();
             cfg.CreateMap<AddressDTO, Address>();
@@ -83,6 +84,7 @@ public class EstateMapper
             cfg.CreateMap<SchoolDTO, School>();
             cfg.CreateMap<UniversityDTO, University>();
             cfg.CreateMap<ShopDTO, Shop>();
+            cfg.CreateMap<HotelDTO, Hotel>();
             cfg.CreateMap<FactoryDTO, Factory>();
             cfg.CreateMap<WarehouseDTO, Warehouse>();
         });
