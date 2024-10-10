@@ -10,7 +10,6 @@ namespace RealEstateBLL.Manager;
 [DataContract]
 public class EstateManager : DictionaryManager<int, Estate>
 {
-
     /// <summary>
     /// Adds an new item to the manager, making the manager choose the unique id for the new estate.
     /// Checks the highest current ID in dictionary and uses the number after as new id.
@@ -28,6 +27,21 @@ public class EstateManager : DictionaryManager<int, Estate>
         bool itemAdded = Add(item.ID, item);  // Using the base Add method.
 
         return itemAdded;
+    }
+
+    /// <summary>
+    /// Get all Estates in the manager as a list.
+    /// </summary>
+    /// <returns>List with estates</returns>
+    public List<Estate> GetAll()
+    {
+        List<Estate> list = new List<Estate>();
+        foreach (var item in Dictionary)
+        {
+            list.Add(item.Value);
+        }
+
+        return list;
     }
 
     /// <summary>
