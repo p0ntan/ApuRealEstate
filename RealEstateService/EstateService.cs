@@ -198,12 +198,23 @@ public class EstateService
     {
         string fileExtension = Path.GetExtension(filePath).ToLower();
 
+        List<Estate> estateList = _estateManager.GetAll();  // Could be DTOs instead?
+        List<EstateDTO> estateDTOList = [];
+
+        foreach (Estate item in estateList)
+        {
+            EstateDTO? estateDTO = ConvertEstateToDTO(item);
+
+            if (estateDTO != null)
+                estateDTOList.Add(estateDTO);
+        }
+
         switch (fileExtension)
         {
             case ".json":
-                return FileHandler.SaveAsJson<EstateManager>(filePath, _estateManager);
+                return FileHandler.SaveAsJson<List<EstateDTO>>(filePath, estateDTOList);
             case ".xml":
-                return FileHandler.SaveAsXML<EstateManager>(filePath, _estateManager);
+                return FileHandler.SaveAsXML<List<EstateDTO>>(filePath, estateDTOList);
             default:
                 return false;
         }
@@ -213,17 +224,25 @@ public class EstateService
     {
         string fileExtension = Path.GetExtension(filePath).ToLower();
 
-        EstateManager? eManager = fileExtension switch
+        List<EstateDTO>? dtoList = fileExtension switch
         {
-            ".json" => FileHandler.OpenJson<EstateManager>(filePath),
-            ".xml" => FileHandler.OpenXML<EstateManager>(filePath),
+            ".json" => FileHandler.OpenJson<List<EstateDTO>>(filePath),
+            ".xml" => FileHandler.OpenXML<List<EstateDTO>>(filePath),
             _ => null
         };
 
-        if (eManager == null)
+        if (dtoList == null)
             return false;
 
-        _estateManager = eManager;
+        ResetManager();
+
+        foreach (EstateDTO dto in dtoList)
+        {
+            Estate? estate = ConvertDTOToEstate(dto);
+
+            if (estate != null)
+                _estateManager.Add(estate.ID, estate);
+        }
 
         return true;
     }

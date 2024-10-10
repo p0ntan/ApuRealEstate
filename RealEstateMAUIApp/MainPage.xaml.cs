@@ -9,8 +9,20 @@ namespace RealEstateMAUIApp;
 
 public partial class MainPage : ContentPage
 {
+    /// <summary>
+    /// The current estate that is created or chosen in the form.
+    /// </summary>
     private string _currentFilePath;
+
+    /// <summary>
+    /// Flag to control if there are any changes in the form (entry- or pickerfields)
+    /// </summary>
     private bool _formHasChanges;
+
+    /// <summary>
+    /// Flag to control if there are any changes to the EstateManager (add, update, delete)
+    /// </summary>
+    private bool _estateManagerHasChanges;
 
     public MainPage()
     {
@@ -18,6 +30,7 @@ public partial class MainPage : ContentPage
         InitializeGUI();
 
         _formHasChanges = false;
+        _estateManagerHasChanges = false;
         _currentFilePath = string.Empty;
 
         ExistingEstates.SelectedEstateChanged += SelectedEstateChanges;
@@ -76,6 +89,7 @@ public partial class MainPage : ContentPage
             if (response.success)
             {
                 AddIdAndDisableButtons(response.newId);
+                _estateManagerHasChanges = true;
                 ExistingEstates.UpdateList();
                 BtnUpdate.Focus();
                 await DisplayAlert("Estate Added", $"Estate added with id {response.newId}", "OK");
@@ -117,6 +131,7 @@ public partial class MainPage : ContentPage
             {
                 ExistingEstates.UpdateList(estateDTO.ID);
                 BtnUpdate.Focus();
+                _estateManagerHasChanges = true;
 
                 await DisplayAlert("Estate Updated", $"Estate updated with id {EstateId.Text}", "OK");
             }
@@ -156,9 +171,9 @@ public partial class MainPage : ContentPage
             if (success)
             {
                 ResetForm();
+                _estateManagerHasChanges = true;
                 ExistingEstates.UpdateList();
                 ExistingEstates.SelectNone();
-                await DisplayAlert("Estate Deleted", $"Estate with id {estateId} deleted", "OK")!;
             }
         }
         catch (FormatException)
@@ -392,6 +407,7 @@ public partial class MainPage : ContentPage
         if (eService.SaveToFile(filePath))
         {
             await DisplayAlert("", "File saved.", "OK");
+            _estateManagerHasChanges = false;
             _currentFilePath = filePath;
         }
         else
@@ -430,6 +446,7 @@ public partial class MainPage : ContentPage
         if (eService.SaveToFile(filePath))
         {
             await DisplayAlert("", "File saved.", "OK");
+            _estateManagerHasChanges = false;
             _currentFilePath = filePath;
         }
         else
@@ -462,7 +479,7 @@ public partial class MainPage : ContentPage
     /// <returns>True if there are changes, false if not.</returns>
     public bool HasUnsavedChanges()
     {
-        return true;
+        return _formHasChanges || _estateManagerHasChanges;
     }
 
     /// <summary>
@@ -516,6 +533,7 @@ public partial class MainPage : ContentPage
             return false;
         }
 
+        _estateManagerHasChanges = false;
         return true;
     }
 
@@ -913,8 +931,10 @@ public partial class MainPage : ContentPage
         EstateService.GetInstance().ResetManager();
 
         // Updating list after reseting manager will clear list.
-        ExistingEstates.UpdateList();  
+        ExistingEstates.UpdateList();
+        ExistingEstates.SelectNone();
         _currentFilePath = string.Empty;
         _formHasChanges = false;
+        _estateManagerHasChanges = false;
     }
 }
