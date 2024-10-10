@@ -1,7 +1,6 @@
 ﻿// Created by Pontus Åkerberg 2024-09-24
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
-using System.Xml;
+using System.Xml.Serialization;
 
 namespace RealEstateDAL;
 
@@ -74,7 +73,7 @@ public class FileHandler
     }
 
     /// <summary>
-    /// Saves the given type T to a XML-file using DataContract and XMLWriter.
+    /// Saves the given type T to a XML-file using XMLSerializer.
     /// </summary>
     /// <typeparam name="T">Type to serializ from.</typeparam>
     /// <param name="filePath">Filepath to file</param>
@@ -84,21 +83,12 @@ public class FileHandler
     {
         try
         {
-            DataContractSerializer ser = new DataContractSerializer(typeof(T));
-
-            XmlWriterSettings settings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "    ",
-                NewLineOnAttributes = false,
-            };
+            XmlSerializer ser = new XmlSerializer(typeof(T));
 
             using (StreamWriter writer = new StreamWriter(filePath))
             {
-                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
-                {
-                    ser.WriteObject(xmlWriter, objectToSerialize);
-                }
+                ser.Serialize(writer, objectToSerialize);
+                writer.Close();
             }
 
             return true;
@@ -110,7 +100,7 @@ public class FileHandler
     }
 
     /// <summary>
-    /// Opens a XML-file with DataContract and deserialize it to the given typeparameter T.
+    /// Opens a XML-file with XMLSerializer and deserialize it to the given typeparameter T.
     /// </summary>
     /// <typeparam name="T">Type to deserialize to.</typeparam>
     /// <param name="filePath">Filepath to file</param>
@@ -119,15 +109,17 @@ public class FileHandler
     {
         try
         {
-            DataContractSerializer ser = new DataContractSerializer(typeof(T));
+            T? type = default;
 
-            using (StreamReader reader = new StreamReader(filePath))
+            XmlSerializer ser = new XmlSerializer(typeof(T));
+
+            using (Stream reader = new FileStream(filePath, FileMode.Open))
             {
-                using (XmlReader xmlReader = XmlReader.Create(reader))
-                {
-                    return (T?)ser.ReadObject(xmlReader);
-                }
+                type = (T?)ser.Deserialize(reader);
+                reader.Close();
             }
+
+            return type;
         }
         catch
         {
