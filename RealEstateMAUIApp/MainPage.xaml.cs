@@ -69,9 +69,8 @@ public partial class MainPage : ContentPage
 
             EstateDTO estateDTO = CreateEstateDTO();
 
-            // Use singleton for keeping same instance of EstateService
-            EstateService estateService = EstateService.GetInstance();
-            (bool success, int newId) response = estateService.CreateEstate(estateDTO);
+            // Singleton is used to keep the same instance of EstateService. Can be reached from other parts of GUI.
+            (bool success, int newId) response = EstateService.GetInstance().CreateEstate(estateDTO);
 
             // Message user, and update form with new ID
             if (response.success)
@@ -94,6 +93,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Updates the estate that is in the form and already added to the manager in BLL.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void OnUpdateEstate(object sender, EventArgs e)
     {
         try
@@ -107,8 +111,7 @@ public partial class MainPage : ContentPage
             ValidateForm();
 
             EstateDTO estateDTO = CreateEstateDTO();
-            EstateService estateService = EstateService.GetInstance();
-            bool success = estateService.UpdateEstate(estateDTO);
+            bool success = EstateService.GetInstance().UpdateEstate(estateDTO);
 
             if (success)
             {
@@ -130,6 +133,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Deletes the current estate in the form if the estate is already in the system/manager.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void OnDeleteEstate(object sender, EventArgs e)
     {
         try
@@ -137,12 +145,13 @@ public partial class MainPage : ContentPage
             string estateId = EstateId.Text;
 
             if (string.IsNullOrEmpty(estateId))
+            {
                 await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
+                return;
+            }
 
             int idAsInteger = StringConverter.ConvertToInteger(estateId);
-
-            EstateService estateService = EstateService.GetInstance();
-            bool success = estateService.DeleteEstate(idAsInteger);
+            bool success = EstateService.GetInstance().DeleteEstate(idAsInteger);
 
             if (success)
             {
@@ -154,7 +163,7 @@ public partial class MainPage : ContentPage
         }
         catch (FormatException)
         {
-            await DisplayAlert("Wrong input", "ID is not a valid integer", "OK")!;
+            await DisplayAlert("", "ID is not a valid integer. Try updating or adding the estate first.", "OK")!;
         }
         catch (Exception ex)
         {
@@ -162,6 +171,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// When user chooses an estate in the list, this methods gets the id of the chosen estate and updates the form. 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void SelectedEstateChanges(object sender, EstateChangedEventArgs e)
     {
         int estateId = e.Value;
@@ -291,8 +305,12 @@ public partial class MainPage : ContentPage
         if (filePath?.FullPath == null)
             return;
 
-        EstateService eService = EstateService.GetInstance();
-        eService.LoadFromFile(filePath.FullPath);
+        if (EstateService.GetInstance().LoadFromFile(filePath.FullPath))
+        {
+            ResetForm();
+            ExistingEstates.UpdateList();
+            _currentFilePath = filePath.FullPath;
+        }
     }
 
     /// <summary>
@@ -324,7 +342,12 @@ public partial class MainPage : ContentPage
         if (filePath?.FullPath == null)
             return;
 
-        EstateService.GetInstance().LoadFromFile(filePath.FullPath);
+        if (EstateService.GetInstance().LoadFromFile(filePath.FullPath))
+        {
+            ResetForm();
+            ExistingEstates.UpdateList();
+            _currentFilePath = filePath.FullPath;
+        }
     }
 
     /// <summary>
@@ -431,6 +454,7 @@ public partial class MainPage : ContentPage
         Application.Current?.Quit();
     }
     #endregion
+
 
     /// <summary>
     /// Returns true if there are any changes in manager or in form.
@@ -543,26 +567,22 @@ public partial class MainPage : ContentPage
         BtnAdd.IsEnabled = false;
     }
 
+    /// <summary>
+    /// Update the complete form with data from an estate with given id.
+    /// </summary>
+    /// <param name="estateId">The id of the estate.</param>
     private void UpdateFormWithEstate(int estateId)
     {
         ResetForm();
 
         EstateDTO? estate = EstateService.GetInstance().GetEstate(estateId);
 
-        if (estate == null) return;
+        if (estate == null)
+            return;
 
         AddIdAndDisableButtons(estate.ID);
-
-        var estateTypeInfo = GetEstateTypeInfo(estate);
-        EstateTypePicker.SelectedIndex = estateTypeInfo.estateTypeIndex;
-        txtType1.Text = estateTypeInfo.typeOneData;
-        txtType2.Text = estateTypeInfo.typeTwoData;
-
-        var specificData = GetSpecificTypeInfo(estate);
-        SpecificTypePicker.SelectedIndex = specificData.specificIndex;
-        txtSpecific1.Text = specificData.specificOneData;
-        txtSpecific2.Text = specificData.specificTwoData;
-
+        UpdateEstateTypeInfo(estate);
+        UpdateSpecificTypeInfo(estate);
         EstateAddress.SetAddress(estate.Address);
         Seller.SetPerson(estate.Seller);
         Buyer.SetPerson(estate.Buyer);
@@ -570,24 +590,36 @@ public partial class MainPage : ContentPage
         if (estate.Buyer.Payment != null)
         {
             IncludePayment.IsChecked = true;
-            Payment.SetPayment(estate.Buyer?.Payment);
+            Payment.SetPayment(estate.Buyer.Payment);
         }
     }
 
-    private (int estateTypeIndex, string typeOneData, string typeTwoData) GetEstateTypeInfo(EstateDTO estate)
+    /// <summary>
+    /// Updates form with estate type info.
+    /// </summary>
+    /// <param name="estate">DTO to update form with.</param>
+    private void UpdateEstateTypeInfo(EstateDTO estate)
     {
-        return estate switch
+        (int index, string dataOne, string dataTwo) estateTypeInfo = estate switch
         {
             ResidentialDTO res => ((int)EstateType.Residential, res.Area.ToString(), res.Bedrooms.ToString()),
             CommercialDTO comm => ((int)EstateType.Commercial, comm.YearBuilt.ToString(), comm.YearlyRevenue.ToString()),
             InstitutionalDTO ins => ((int)EstateType.Institutional, ins.EstablishedYear.ToString(), ins.NumberOfBuildings.ToString()),
             _ => (EstateTypePicker.SelectedIndex, "", "")
         };
+
+        EstateTypePicker.SelectedIndex = estateTypeInfo.index;
+        txtType1.Text = estateTypeInfo.dataOne;
+        txtType2.Text = estateTypeInfo.dataTwo;
     }
 
-    private (int specificIndex, string specificOneData, string specificTwoData) GetSpecificTypeInfo(EstateDTO estate)
+    /// <summary>
+    /// Updates form with estate specific info.
+    /// </summary>
+    /// <param name="estate">DTO to update form with.</param>
+    private void UpdateSpecificTypeInfo(EstateDTO estate)
     {
-        return estate switch
+        (int index, string dataOne, string dataTwo) specificData = estate switch
         {
             RowhouseDTO specs => ((int)ResidentialType.Rowhouse, specs.Floors.ToString(), specs.PlotArea.ToString()),
             VillaDTO specs => ((int)ResidentialType.Villa, specs.Floors.ToString(), specs.PlotArea.ToString()),
@@ -602,6 +634,10 @@ public partial class MainPage : ContentPage
             HospitalDTO specs => ((int)InstitutionalType.Hospital, specs.NumberOfBeds.ToString(), specs.NumberOfParkingSpots.ToString()),
             _ => (SpecificTypePicker.SelectedIndex, "", "")
         };
+
+        SpecificTypePicker.SelectedIndex = specificData.index;
+        txtSpecific1.Text = specificData.dataOne;
+        txtSpecific2.Text = specificData.dataTwo;
     }
 
     /// <summary>
