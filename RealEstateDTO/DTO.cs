@@ -1,4 +1,6 @@
-﻿namespace RealEstateDTO;
+﻿using System.Xml.Serialization;
+
+namespace RealEstateDTO;
 
 public record EstateCreateDTO(
     int ID,
@@ -15,6 +17,8 @@ public record EstateCreateDTO(
 );
 
 // Person DTOs
+[XmlInclude(typeof(SellerDTO))]
+[XmlInclude(typeof(BuyerDTO))]
 public record PersonDTO
 {
     public string FirstName { get; init; }
@@ -41,6 +45,9 @@ public record AddressDTO()
 }
 
 // Payment DTOs
+[XmlInclude(typeof(BankDTO))]
+[XmlInclude(typeof(PaypalDTO))]
+[XmlInclude(typeof(WesternUnionDTO))]
 public abstract record PaymentDTO
 {
     public double Amount { get; init; }

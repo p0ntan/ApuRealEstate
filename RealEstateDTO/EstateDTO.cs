@@ -1,11 +1,23 @@
 ﻿// Created by Pontus Åkerbergh 2024-10-05
-// Names are self explainatory
+using System.Xml.Serialization;
 
 namespace RealEstateDTO;
 
+// Names are self explainatory
 // Estate DTOs
+[XmlInclude(typeof(VillaDTO))]
+[XmlInclude(typeof(RowhouseDTO))]
+[XmlInclude(typeof(RentalDTO))]
+[XmlInclude(typeof(TenementDTO))]
+[XmlInclude(typeof(FactoryDTO))]
+[XmlInclude(typeof(HotelDTO))]
+[XmlInclude(typeof(ShopDTO))]
+[XmlInclude(typeof(WarehouseDTO))]
+[XmlInclude(typeof(HospitalDTO))]
+[XmlInclude(typeof(SchoolDTO))]
+[XmlInclude(typeof(UniversityDTO))]
 public record EstateDTO
-{
+{    
     public int ID { get; set; }
     public int LegalForm { get; set; }
     public AddressDTO Address { get; set; }
