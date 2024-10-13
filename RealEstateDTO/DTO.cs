@@ -1,20 +1,9 @@
-﻿using System.Xml.Serialization;
+﻿// Created by Pontus Åkerberg 2024-10-06
+using System.Xml.Serialization;
 
 namespace RealEstateDTO;
 
-public record EstateCreateDTO(
-    int ID,
-    int EstateType,
-    int SpecificTypeIndex,
-    int LegalForm,
-    AddressDTO Address,
-    PersonDTO Seller,
-    PersonDTO Buyer,
-    int TypeDataOne,
-    int TypeDataTwo,
-    int SpecificDataOne,
-    int SpecificDataTwo
-);
+// Names are self explainatory.
 
 // Person DTOs
 [XmlInclude(typeof(SellerDTO))]
@@ -35,7 +24,6 @@ public record BuyerDTO() : PersonDTO
 }
 
 // Address DTO
-
 public record AddressDTO()
 {
     public string Street { get; init; }
