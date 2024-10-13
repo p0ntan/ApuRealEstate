@@ -43,6 +43,8 @@ public partial class MainPage : ContentPage
         AddLegalForms();
 
         Payment.IsEnabled = false;
+
+        AddChangeControlToControls();
     }
 
     /// <summary>
@@ -64,6 +66,27 @@ public partial class MainPage : ContentPage
         LegalFormPicker.ItemsSource = Enum.GetNames(typeof(LegalForm));
         LegalFormPicker.SelectedIndex = 0;
     }
+
+    /// <summary>
+    /// Method to add an eventmethod inputChanged to all text-, combo- and checkboxes.
+    /// </summary>
+    public void AddChangeControlToControls()
+    {
+        IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
+        IEnumerable<Picker> allPickers = this.GetVisualTreeDescendants().OfType<Picker>();
+
+        foreach (Entry field in allEntries)
+        {
+            field.TextChanged += (sender, e) => inputChanged(sender!, e);
+        }
+
+        foreach (Picker picker in allPickers)
+        {
+            picker.SelectedIndexChanged += (sender, e) => inputChanged(sender!, e);
+        }
+
+        IncludePayment.CheckedChanged += (sender, e) => inputChanged(sender!, e);
+    }
     #endregion
 
     #region Form Events
@@ -77,29 +100,15 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            // Validate form
-            ValidateForm();
+            bool estateSaved = await SaveCurrentEstateToManager();
 
-            EstateDTO estateDTO = CreateEstateDTO();
-
-            // Singleton is used to keep the same instance of EstateService. Can be reached from other parts of GUI.
-            (bool success, int newId) response = EstateService.GetInstance().CreateEstate(estateDTO);
-
-            // Message user, and update form with new ID
-            if (response.success)
+            if (estateSaved)
             {
-                AddIdAndDisableButtons(response.newId);
-                _estateManagerHasChanges = true;
-                ExistingEstates.UpdateList();
                 BtnUpdate.Focus();
-                await DisplayAlert("Estate Added", $"Estate added with id {response.newId}", "OK");
+                ExistingEstates.UpdateList();
+                await DisplayAlert("Estate Added", $"Estate added with id {EstateId.Text}", "OK");
             }
-            else
-                await DisplayAlert("Estate Not Added", "Control inputs, couldn't create estate.", "OK");
-        }
-        catch (FormatException ex)
-        {
-            await DisplayAlert("Wrong input", ex.Message, "OK")!;
+                
         }
         catch (Exception ex)
         {
@@ -122,25 +131,14 @@ public partial class MainPage : ContentPage
                 return;
             }
 
-            ValidateForm();
+            bool estateSaved = await SaveCurrentEstateToManager();
 
-            EstateDTO estateDTO = CreateEstateDTO();
-            bool success = EstateService.GetInstance().UpdateEstate(estateDTO);
-
-            if (success)
+            if (estateSaved)
             {
-                ExistingEstates.UpdateList(estateDTO.ID);
                 BtnUpdate.Focus();
-                _estateManagerHasChanges = true;
-
+                ExistingEstates.UpdateList(EstateId.Text);
                 await DisplayAlert("Estate Updated", $"Estate updated with id {EstateId.Text}", "OK");
-            }
-            else
-                await DisplayAlert("Estate Not Updated", "Control inputs, couldn't update estate.", "OK");
-        }
-        catch (FormatException ex)
-        {
-            await DisplayAlert("Wrong input", ex.Message, "OK")!;
+            }   
         }
         catch (Exception ex)
         {
@@ -164,6 +162,11 @@ public partial class MainPage : ContentPage
                 await DisplayAlert("No chosen estate", "No current estate to delete.", "OK")!;
                 return;
             }
+
+            bool wantsToDelete = await DisplayAlert("", $"Are you sure you want to delete estate with id {estateId}?", "Yes", "No");
+
+            if (!wantsToDelete)
+                return;
 
             int idAsInteger = StringConverter.ConvertToInteger(estateId);
             bool success = EstateService.GetInstance().DeleteEstate(idAsInteger);
@@ -196,7 +199,17 @@ public partial class MainPage : ContentPage
         int estateId = e.Value;
 
         if (_formHasChanges)
-            await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
+        {
+            bool wantsToSave = await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
+
+            if (wantsToSave)
+            {
+                bool estateSaved = await SaveCurrentEstateToManager();
+
+                if (!estateSaved)
+                    return;
+            }
+        }
 
         UpdateFormWithEstate(estateId);
     }
@@ -261,6 +274,17 @@ public partial class MainPage : ContentPage
                 UpdateGUIForSpecificInstitutional();
                 break;
         }
+    }
+
+    /// <summary>
+    /// Method changes private field _formHasChanges to true when added to a control.
+    /// Used for text-, combo- and checkboxes in form.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void inputChanged(object sender, EventArgs e)
+    {
+        _formHasChanges = true;
     }
     #endregion
 
@@ -396,7 +420,7 @@ public partial class MainPage : ContentPage
 
         if (_formHasChanges)
         {
-            bool estateSaved = true;
+            bool estateSaved = await SaveCurrentEstateToManager();
 
             if (!estateSaved)
                 return;
@@ -435,7 +459,7 @@ public partial class MainPage : ContentPage
 
         if (_formHasChanges)
         {
-            bool estateSaved = true;
+            bool estateSaved = await SaveCurrentEstateToManager();
 
             if (!estateSaved)
                 return;
@@ -472,6 +496,7 @@ public partial class MainPage : ContentPage
     }
     #endregion
 
+    #region Handling methods
 
     /// <summary>
     /// Returns true if there are any changes in manager or in form.
@@ -519,7 +544,7 @@ public partial class MainPage : ContentPage
 
         if (_formHasChanges)
         {
-            bool estateSaved = true;
+            bool estateSaved = await SaveCurrentEstateToManager();
 
             if (!estateSaved)
                 return false;
@@ -610,6 +635,8 @@ public partial class MainPage : ContentPage
             IncludePayment.IsChecked = true;
             Payment.SetPayment(estate.Buyer.Payment);
         }
+
+        _formHasChanges = false;
     }
 
     /// <summary>
@@ -714,6 +741,8 @@ public partial class MainPage : ContentPage
     /// Creates a DTO for creating new estates. Method should run after the form as been validated.
     /// </summary>
     /// <returns>An comlete estate as DTO</returns>
+    /// <exception cref="FormatException"></exception>
+    /// <exception cref="Exception"></exception>
     private EstateDTO CreateEstateDTO()
     {
         try
@@ -749,7 +778,12 @@ public partial class MainPage : ContentPage
         {
             throw new FormatException(ex.Message);
         }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
+    #endregion
 
     #region Update GUI methods when changing estate type
 
@@ -889,6 +923,52 @@ public partial class MainPage : ContentPage
         lblSpecific2.Text = secondLabel;
     }
     #endregion
+
+    /// <summary>
+    /// Save current estate as in form to the estatemanager, creates a new one if no estate in _currentEstate.
+    /// </summary>
+    /// <returns>True if saved, false if not</returns>
+    private async Task<bool> SaveCurrentEstateToManager()
+    {
+        try
+        {
+            ValidateForm();
+
+            EstateDTO estateDTO = CreateEstateDTO();
+
+            bool success = false;
+            bool isNew = false;
+            int estateID = estateDTO.ID;
+
+            if (estateID == -1)  // Estate is new if id is -1
+            {
+                (success, estateID) = EstateService.GetInstance().CreateEstate(estateDTO);
+                isNew = success;
+            }
+            else
+                success = EstateService.GetInstance().UpdateEstate(estateDTO);
+
+            if (!success)
+                return false;
+
+            AddIdAndDisableButtons(estateID);
+
+            _estateManagerHasChanges = true;
+            _formHasChanges = false;
+
+            return true;
+        }
+        catch (FormatException ex)
+        {
+            await DisplayAlert("Wrong input", ex.Message, "OK")!;
+            return false;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK")!;
+            return false;
+        }
+    }
 
     /// <summary>
     /// Resets all fields in the form.

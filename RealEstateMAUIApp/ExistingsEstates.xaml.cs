@@ -15,6 +15,20 @@ public partial class ExistingsEstates : ContentView
     public void SelectNone()
     {
         EstateCollection.SelectedItem = null;
+        EstateDetails.Children.Clear();
+    }
+
+    public void ChooseEstate(string estateID)
+    {
+        EstateCollection.SelectedItem = null;
+    }
+
+    public void UpdateList(string estateID)
+    {
+        if (int.TryParse(estateID, out int id))
+            UpdateList(id);
+        else
+            UpdateList();
     }
 
     public void UpdateList(int? estateID = null)
