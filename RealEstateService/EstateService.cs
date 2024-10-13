@@ -13,7 +13,7 @@ namespace RealEstateService;
 public class EstateService
 {
     private EstateManager _estateManager;
-    private static EstateService? _estateService;
+    private static EstateService? _estateService;  // Using singleton for keeping one instance of EstateService
 
     /// <summary>
     /// Private construtor to use the Singleton pattern.
@@ -194,6 +194,11 @@ public class EstateService
         return estateDTO;
     }
 
+    /// <summary>
+    /// Saves the estates in the estatemanager to the given filepath. The file can be a .json or .xml.
+    /// </summary>
+    /// <param name="filePath">Filepath to the file</param>
+    /// <returns>True if saved, false if not</returns>
     public bool SaveToFile(string filePath)
     {
         string fileExtension = Path.GetExtension(filePath).ToLower();
@@ -220,6 +225,11 @@ public class EstateService
         }
     }
 
+    /// <summary>
+    /// Loads estates from a given file and adds it to the manager which is first reset.
+    /// </summary>
+    /// <param name="filePath">The filpath to open</param>
+    /// <returns>True if opened and manager updated, false if not.</returns>
     public bool LoadFromFile(string filePath)
     {
         string fileExtension = Path.GetExtension(filePath).ToLower();
