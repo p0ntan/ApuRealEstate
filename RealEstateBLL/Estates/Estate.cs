@@ -85,27 +85,27 @@ public abstract class Estate : IEstate
 
         details.Add($"{this.GetEstateType()}, {specificType}.");
         details.Add(this.LegalForm.ToString());
-        details.Add("\n");
+        details.Add("");
 
         if (this.Address != null)
         {
             details.Add("Address:");
             details.Add(this.Address.ToString());
-            details.Add("\n");
+            details.Add("");
         }
 
         if (this.Seller != null)
         {
             details.Add("Seller:");
             details.AddRange(this.Seller.GetDetailsAsList());
-            details.Add("\n");
+            details.Add("");
         }
 
         if (this.Buyer != null)
         {
             details.Add("Buyer:");
             details.AddRange(this.Buyer.GetDetailsAsList());
-            details.Add("\n");
+            details.Add("");
         }
 
         return details;

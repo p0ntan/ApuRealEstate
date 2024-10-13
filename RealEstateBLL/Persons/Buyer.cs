@@ -51,7 +51,7 @@ public class Buyer : Person
 
         if (this.Payment != null)
         {
-            details.Add("\n");
+            details.Add("");
             details.Add("Payment:");
             details.AddRange(this.Payment.GetDetailsAsList());
         }
