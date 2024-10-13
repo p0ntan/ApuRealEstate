@@ -1,8 +1,15 @@
 ﻿// Created by Pontus Åkerberg 2024-10-08
 using RealEstateDTO;
 using RealEstateMAUIApp.Enums;
+
+/// <summary>
+/// DTO builder is for the creation of DTOs.
+/// </summary>
 public class EstateDTOBuilder
 {
+    /// <summary>
+    /// Field to hold the DTO while creating.
+    /// </summary>
     private EstateDTO _estate;
 
     /// <summary>
@@ -21,36 +28,66 @@ public class EstateDTOBuilder
         _estate = estate;
     }
 
+    /// <summary>
+    /// Add id to TO
+    /// </summary>
+    /// <param name="idNumber">Id number</param>
+    /// <returns>DTO builder</returns>
     public EstateDTOBuilder AddID(int idNumber)
     {
         _estate.ID = idNumber;
         return this;
     }
 
+    /// <summary>
+    /// Add legal form
+    /// </summary>
+    /// <param name="legalForm"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddLegalForm(int legalForm)
     {
         _estate.LegalForm = legalForm;
         return this;
     }
 
+    /// <summary>
+    /// Add address.
+    /// </summary>
+    /// <param name="address"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddAddress(AddressDTO address)
     {
         _estate.Address = address;
         return this;
     }
 
+    /// <summary>
+    /// Add Seller.
+    /// </summary>
+    /// <param name="seller"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddSeller(SellerDTO seller)
     {
         _estate.Seller = seller;
         return this;
     }
 
+    /// <summary>
+    /// Add buyer.
+    /// </summary>
+    /// <param name="buyer"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddBuyer(BuyerDTO buyer)
     {
         _estate.Buyer = buyer;
         return this;
     }
 
+    /// <summary>
+    /// Add estate type details
+    /// </summary>
+    /// <param name="typeDetails"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddEstateTypeDetails((int typeOne, int typeTwo) typeDetails)
     {
         switch (_estate)
@@ -72,6 +109,11 @@ public class EstateDTOBuilder
         return this;
     }
 
+    /// <summary>
+    /// Add estate specific details.
+    /// </summary>
+    /// <param name="specificDetails"></param>
+    /// <returns></returns>
     public EstateDTOBuilder AddEstateSpecificDetails((int specificOne, int specificTwo) specificDetails)
     {
         switch (_estate)
@@ -117,6 +159,12 @@ public class EstateDTOBuilder
         return this;
     }
 
+    /// <summary>
+    /// Create the DTO with given estate type and specific index as in enum.
+    /// </summary>
+    /// <param name="estateType">The type of estate.</param>
+    /// <param name="specificTypeIndex">Specific index of estate as in enum.</param>
+    /// <returns></returns>
     private EstateDTO? CreateEstate(EstateType estateType, int specificTypeIndex)
     {
         EstateDTO? estate = null;
@@ -218,6 +266,10 @@ public class EstateDTOBuilder
         return estate;
     }
 
+    /// <summary>
+    /// Returns the created DTO with all added blocks.
+    /// </summary>
+    /// <returns>The created DTO with all given data.</returns>
     public EstateDTO Build()
     {
         return _estate;
