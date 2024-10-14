@@ -73,8 +73,7 @@ public abstract class Estate : IEstate
     {
         List<string> details = new List<string>();
 
-        details.Add($"ID: {this.ID}");
-
+        string info = $"ID: {this.ID}. ";
         string specificType = this switch
         {
             Residential => ((ResidentialType)GetSpecficTypeIndex()).ToString(),
@@ -82,30 +81,30 @@ public abstract class Estate : IEstate
             Institutional => ((InstitutionalType)GetSpecficTypeIndex()).ToString(),
             _ => ""
         };
-
-        details.Add($"{this.GetEstateType()}, {specificType}.");
-        details.Add(this.LegalForm.ToString());
-        details.Add("");
+        
+        info += $"{this.GetEstateType()}, {specificType}. ";
+        info += this.LegalForm.ToString();
+        details.Add(info);
+        details.Add("---------");
 
         if (this.Address != null)
         {
-            details.Add("Address:");
             details.Add(this.Address.ToString());
-            details.Add("");
+            details.Add("---------");
         }
 
         if (this.Seller != null)
         {
             details.Add("Seller:");
             details.AddRange(this.Seller.GetDetailsAsList());
-            details.Add("");
+            details.Add("---------");
         }
 
         if (this.Buyer != null)
         {
             details.Add("Buyer:");
             details.AddRange(this.Buyer.GetDetailsAsList());
-            details.Add("");
+            details.Add("---------");
         }
 
         return details;
