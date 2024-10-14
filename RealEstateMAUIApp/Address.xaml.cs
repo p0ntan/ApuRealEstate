@@ -25,7 +25,7 @@ public partial class Address : ContentView
     {
         CountryPicker.Items.Clear();
         CountryPicker.ItemsSource = Enum.GetNames(typeof(Countries));
-        CountryPicker.SelectedItem = Countries.Sweden;  // Default to Sweden
+        CountryPicker.SelectedItem = "Sweden";  // Default to Sweden
     }
 
     /// <summary>
@@ -85,6 +85,6 @@ public partial class Address : ContentView
         }
 
         // Set Sweden as default.
-        CountryPicker.SelectedItem = Countries.Sweden;
+        CountryPicker.SelectedItem = "Sweden";
     }
 }
