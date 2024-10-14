@@ -7,10 +7,16 @@ using RealEstateBLL.Payments;
 
 namespace RealEstateBLL;
 
+/// <summary>
+/// Estatemapper maps between DTOs and Estates.
+/// </summary>
 public class EstateMapper
 {
     private IMapper _mapper;
 
+    /// <summary>
+    /// Default constructor that sets upp the config for the AutoMapper.
+    /// </summary>
     public EstateMapper()
     {
         var config = new MapperConfiguration(cfg =>
@@ -94,11 +100,23 @@ public class EstateMapper
         _mapper = config.CreateMapper();
     }
 
+    /// <summary>
+    /// Generic method to map between DTOs and Estates with it's nested types.
+    /// </summary>
+    /// <typeparam name="TSource">The type source</typeparam>
+    /// <typeparam name="TDestination">The type destination</typeparam>
+    /// <param name="source">Source to map from</param>
+    /// <returns>The destinaion type</returns>
     public TDestination MapDTO<TSource, TDestination>(TSource source)
     {
         return _mapper.Map<TDestination>(source);
     }
 
+    /// <summary>
+    /// Maps a given DTO to it corresponding concrete estate type.
+    /// </summary>
+    /// <param name="estateDTO">The DTO to map from</param>
+    /// <returns>The created estate, null if no match or any error.</returns>
     public Estate? MapDTOToEstate(EstateDTO estateDTO)
     {
         try
@@ -127,6 +145,11 @@ public class EstateMapper
         }
     }
 
+    /// <summary>
+    /// Maps a given estate to it corresponding DTO.
+    /// </summary>
+    /// <param name="estate">The estate to map from</param>
+    /// <returns>The created DTO, null if no match or any error.</returns>
     public EstateDTO? MapEstateToDTO(Estate estate)
     {
         try

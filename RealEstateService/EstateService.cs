@@ -25,7 +25,7 @@ public class EstateService
     /// <summary>
     /// Returns the instance of the class by using Singleton pattern.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The single instance of EstateService</returns>
     public static EstateService GetInstance()
     {
         if (_estateService == null)
