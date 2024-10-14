@@ -9,22 +9,31 @@
                     VerticalOptions="Center" 
                     FontSize="Small" />
         <HorizontalStackLayout Spacing="5" Padding="5">
-            <ListView x:Name="EstateCollection"
+            <VerticalStackLayout MaximumWidthRequest="450">
+                <HorizontalStackLayout Spacing="20">
+                    <Picker x:Name="CountryFilter" WidthRequest="220" />
+                    <Button x:Name="FilterButton" Clicked="OnFilterByCountryClicked" Text="Filter" BackgroundColor="{StaticResource Secondary}" />
+                    <Button x:Name="ShowAllButton" Clicked="OnShowAllClicked" Text="Show All" BackgroundColor="{StaticResource Secondary}"/>
+                </HorizontalStackLayout>
+                <ListView x:Name="EstateCollection"
                       SelectionMode="Single"
                       CachingStrategy="RecycleElement"
                       HasUnevenRows="False"
                       SeparatorVisibility="None"
                       ItemSelected="OnEstateSelectionChanged"
                       MaximumWidthRequest="450"
-                      Margin="5,5,5,5">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell Height="32">
-                            <Label Text="{Binding .}" />
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                      MinimumHeightRequest="32"
+                      Margin="5,5,5,20">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell Height="32">
+                                <Label Text="{Binding .}" />
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Button Clicked="OnSelectEstateClicked" Text="Select Estate" MaximumWidthRequest="120" HorizontalOptions="Start" />
+            </VerticalStackLayout>
 
             <VerticalStackLayout x:Name="EstateDetails" />
 

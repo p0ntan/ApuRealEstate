@@ -82,6 +82,9 @@ public partial class MainPage : ContentPage
 
         foreach (Picker picker in allPickers)
         {
+            if (picker.StyleId == "CountryFilter")
+                continue;
+
             picker.SelectedIndexChanged += (sender, e) => inputChanged(sender!, e);
         }
 
@@ -347,6 +350,7 @@ public partial class MainPage : ContentPage
         if (EstateService.GetInstance().LoadFromFile(filePath.FullPath))
         {
             ResetForm();
+            ExistingEstates.Reset();
             ExistingEstates.UpdateList();
             _currentFilePath = filePath.FullPath;
         }
@@ -384,6 +388,7 @@ public partial class MainPage : ContentPage
         if (EstateService.GetInstance().LoadFromFile(filePath.FullPath))
         {
             ResetForm();
+            ExistingEstates.Reset();
             ExistingEstates.UpdateList();
             _currentFilePath = filePath.FullPath;
         }
@@ -990,6 +995,7 @@ public partial class MainPage : ContentPage
 
         LegalFormPicker.ItemsSource = Enum.GetNames(typeof(LegalForm));
         EstateTypePicker.ItemsSource = Enum.GetNames(typeof(EstateType));
+        EstateTypePicker.SelectedIndex = 0;
 
         IncludePayment.IsChecked = false;
         EstateTypePicker.IsEnabled = true;
@@ -1011,8 +1017,7 @@ public partial class MainPage : ContentPage
         EstateService.GetInstance().ResetManager();
 
         // Updating list after reseting manager will clear list.
-        ExistingEstates.UpdateList();
-        ExistingEstates.SelectNone();
+        ExistingEstates.Reset();
         _currentFilePath = string.Empty;
         _formHasChanges = false;
         _estateManagerHasChanges = false;
