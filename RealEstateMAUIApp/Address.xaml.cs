@@ -1,27 +1,31 @@
 // Created by Pontus Åkerberg 2024-10-05
 using RealEstateDTO;
-using RealEstateService;
+using RealEstateMAUIApp.Enums;
 
 namespace RealEstateMAUIApp;
 
+/// <summary>
+/// Addressview to be used for places that needs an adress.
+/// </summary>
 public partial class Address : ContentView
 {
+    /// <summary>
+    /// Default constructor initialized component and GUI.
+    /// </summary>
     public Address()
     {
         InitializeComponent();
         InitializeAddressGUI();
     }
 
+    /// <summary>
+    /// Initializes GUI by adding countries to picker.
+    /// </summary>
     private void InitializeAddressGUI()
     {
         CountryPicker.Items.Clear();
-
-        string[] countries = CountryService.GetCountries();
-
-        foreach (string country in countries)
-            CountryPicker.Items.Add(country);
-
-        CountryPicker.SelectedItem = "Sweden";  // Default to Sweden
+        CountryPicker.ItemsSource = Enum.GetNames(typeof(Countries));
+        CountryPicker.SelectedItem = Countries.Sweden;  // Default to Sweden
     }
 
     /// <summary>
@@ -81,6 +85,6 @@ public partial class Address : ContentView
         }
 
         // Set Sweden as default.
-        CountryPicker.SelectedItem = "Sweden";
+        CountryPicker.SelectedItem = Countries.Sweden;
     }
 }
