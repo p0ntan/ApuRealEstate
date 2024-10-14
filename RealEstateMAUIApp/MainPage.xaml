@@ -20,8 +20,8 @@
         </MenuBarItem>
     </ContentPage.MenuBarItems>
 
-    <ScrollView MaximumWidthRequest="1280">
-        <VerticalStackLayout Padding="30,0" Spacing="25">
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="25" MaximumWidthRequest="960">
             <FlexLayout Wrap="Wrap" JustifyContent="Center" AlignItems="Start" AlignContent="Stretch">
                 <VerticalStackLayout Spacing="20">
                     <FlexLayout
@@ -52,7 +52,7 @@
                         AlignContent="Stretch">
                         <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="300" MaximumWidthRequest="300">
                             <Label Text="Estate Type Info" FontSize="Small" />
-                            <Grid ColumnSpacing="5">
+                                <Grid ColumnSpacing="5" RowSpacing="5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
@@ -69,7 +69,7 @@
                         </VerticalStackLayout>
                         <VerticalStackLayout Padding="5" Spacing="5" MinimumWidthRequest="300" MaximumWidthRequest="300">
                             <Label Text="Estate Specific Info" FontSize="Small" />
-                            <Grid ColumnSpacing="5">
+                                <Grid ColumnSpacing="5" RowSpacing="5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
@@ -99,6 +99,7 @@
                 AlignItems="Center"
                 JustifyContent="Center"
                 AlignContent="Stretch"
+                Padding="5"
                 >
                     <local:Person x:Name="Seller" Title="Seller" MinimumWidthRequest="300" />
                     <local:Person x:Name="Buyer" Title="Buyer" MinimumWidthRequest="300" />
@@ -119,7 +120,7 @@
                 <Button Text="Empty Form" Clicked="OnResetForm" BackgroundColor="{StaticResource White}" />
             </FlexLayout>
 
-            <local:ExistingsEstates x:Name="ExistingEstates" MaximumWidthRequest="900" />
+            <local:ExistingsEstates x:Name="ExistingEstates" MaximumWidthRequest="900" Padding="10" />
 
         </VerticalStackLayout>
     </ScrollView>
