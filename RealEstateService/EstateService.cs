@@ -5,6 +5,7 @@ using RealEstateBLL.Manager;
 using RealEstateDAL;
 using RealEstateDTO;
 
+
 namespace RealEstateService;
 
 /// <summary>
@@ -60,7 +61,8 @@ public class EstateService
     /// <returns>Boolean if success and the new id of the estate to show for user.</returns>
     public (bool, int) CreateEstate(EstateDTO estateDTO)
     {
-        Estate? estate = ConvertDTOToEstate(estateDTO);
+        EstateMapper mapper = new();
+        Estate? estate = mapper.MapDTOToEstate(estateDTO);
 
         int newID = -1;  // Set a default id to use when estate not created/added
 
@@ -94,7 +96,8 @@ public class EstateService
     /// <returns>True if updates, false if not</returns>
     public bool UpdateEstate(EstateDTO estateDTO)
     {
-        Estate? estate = ConvertDTOToEstate(estateDTO);
+        EstateMapper mapper = new();
+        Estate? estate = mapper.MapDTOToEstate(estateDTO);
 
         if (estate == null)
             return false;
@@ -116,9 +119,31 @@ public class EstateService
         if (estate == null)
             return null;
 
-        EstateDTO? estateDTO = ConvertEstateToDTO(estate);
+        EstateMapper mapper = new();
+        EstateDTO? estateDTO = mapper.MapEstateToDTO(estate);
 
         return estateDTO;
+    }
+
+    /// <summary>
+    /// Gets the estates from a country based on a given string.
+    /// </summary>
+    /// <param name="country">Country to filter by</param>
+    /// <returns>Array of strings representing the found countries.</returns>
+    public string[] GetEstateByCountry(string country)
+    {
+        if (!Enum.TryParse(country, out Countries foundCountry))
+            return [];
+
+        Dictionary<Countries, List<Estate>> countryDict = _estateManager.FindByCountry(foundCountry);
+        List<string> countryList = [];
+
+        foreach (Estate estate in countryDict[foundCountry])
+        {
+            countryList.Add(estate.ToString());
+        }
+
+        return countryList.ToArray();
     }
 
     /// <summary>
@@ -141,60 +166,6 @@ public class EstateService
     }
 
     /// <summary>
-    /// Converts a EstateDTO to a concrete estate class.
-    /// </summary>
-    /// <param name="estateDTO">The DTO to convert</param>
-    /// <returns>A concrete estate object</returns>
-    private Estate? ConvertDTOToEstate(EstateDTO estateDTO)
-    {
-        EstateMapper mapper = new();
-        Estate? estate = estateDTO switch
-        {
-            RowhouseDTO rowhouse => mapper.MapDTO<RowhouseDTO, Rowhouse>(rowhouse),
-            VillaDTO villa => mapper.MapDTO<VillaDTO, Villa>(villa),
-            RentalDTO rental => mapper.MapDTO<RentalDTO, Rental>(rental),
-            TenementDTO tenement => mapper.MapDTO<TenementDTO, Tenement>(tenement),
-            HospitalDTO hospital => mapper.MapDTO<HospitalDTO, Hospital>(hospital),
-            SchoolDTO school => mapper.MapDTO<SchoolDTO, School>(school),
-            UniversityDTO university => mapper.MapDTO<UniversityDTO, University>(university),
-            ShopDTO shop => mapper.MapDTO<ShopDTO, Shop>(shop),
-            FactoryDTO factory => mapper.MapDTO<FactoryDTO, Factory>(factory),
-            HotelDTO hotel => mapper.MapDTO<HotelDTO, Hotel>(hotel),
-            WarehouseDTO warehouse => mapper.MapDTO<WarehouseDTO, Warehouse>(warehouse),
-            _ => null
-        };
-
-        return estate;
-    }
-
-    /// <summary>
-    /// Converts an estate to an estateDTO.
-    /// </summary>
-    /// <param name="estate"></param>
-    /// <returns></returns>
-    private EstateDTO? ConvertEstateToDTO(Estate estate)
-    {
-        EstateMapper mapper = new();
-        EstateDTO? estateDTO = estate switch
-        {
-            Rowhouse rowhouse => mapper.MapDTO<Rowhouse, RowhouseDTO>(rowhouse),
-            Villa villa => mapper.MapDTO<Villa, VillaDTO>(villa),
-            Rental rental => mapper.MapDTO<Rental, RentalDTO>(rental),
-            Tenement tenement => mapper.MapDTO<Tenement, TenementDTO>(tenement),
-            Hospital hospital => mapper.MapDTO<Hospital, HospitalDTO>(hospital),
-            School school => mapper.MapDTO<School, SchoolDTO>(school),
-            University university => mapper.MapDTO<University, UniversityDTO>(university),
-            Shop shop => mapper.MapDTO<Shop, ShopDTO>(shop),
-            Factory factory => mapper.MapDTO<Factory, FactoryDTO>(factory),
-            Hotel hotel => mapper.MapDTO<Hotel, HotelDTO>(hotel),
-            Warehouse warehouse => mapper.MapDTO<Warehouse, WarehouseDTO>(warehouse),
-            _ => null
-        };
-
-        return estateDTO;
-    }
-
-    /// <summary>
     /// Saves the estates in the estatemanager to the given filepath. The file can be a .json or .xml.
     /// </summary>
     /// <param name="filePath">Filepath to the file</param>
@@ -205,10 +176,11 @@ public class EstateService
 
         List<Estate> estateList = _estateManager.GetAll();  // Could be DTOs instead?
         List<EstateDTO> estateDTOList = [];
+        EstateMapper mapper = new();
 
         foreach (Estate item in estateList)
         {
-            EstateDTO? estateDTO = ConvertEstateToDTO(item);
+            EstateDTO? estateDTO = mapper.MapEstateToDTO(item);
 
             if (estateDTO != null)
                 estateDTOList.Add(estateDTO);
@@ -246,9 +218,11 @@ public class EstateService
 
         ResetManager();
 
+        EstateMapper mapper = new();
+
         foreach (EstateDTO dto in dtoList)
         {
-            Estate? estate = ConvertDTOToEstate(dto);
+            Estate? estate = mapper.MapDTOToEstate(dto);
 
             if (estate != null)
                 _estateManager.Add(estate.ID, estate);

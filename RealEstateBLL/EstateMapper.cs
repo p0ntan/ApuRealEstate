@@ -98,4 +98,60 @@ public class EstateMapper
     {
         return _mapper.Map<TDestination>(source);
     }
+
+    public Estate? MapDTOToEstate(EstateDTO estateDTO)
+    {
+        try
+        {
+            Estate? estate = estateDTO switch
+            {
+                RowhouseDTO rowhouse => MapDTO<RowhouseDTO, Rowhouse>(rowhouse),
+                VillaDTO villa => MapDTO<VillaDTO, Villa>(villa),
+                RentalDTO rental => MapDTO<RentalDTO, Rental>(rental),
+                TenementDTO tenement => MapDTO<TenementDTO, Tenement>(tenement),
+                HospitalDTO hospital => MapDTO<HospitalDTO, Hospital>(hospital),
+                SchoolDTO school => MapDTO<SchoolDTO, School>(school),
+                UniversityDTO university => MapDTO<UniversityDTO, University>(university),
+                ShopDTO shop => MapDTO<ShopDTO, Shop>(shop),
+                FactoryDTO factory => MapDTO<FactoryDTO, Factory>(factory),
+                HotelDTO hotel => MapDTO<HotelDTO, Hotel>(hotel),
+                WarehouseDTO warehouse => MapDTO<WarehouseDTO, Warehouse>(warehouse),
+                _ => null
+            };
+
+            return estate;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public EstateDTO? MapEstateToDTO(Estate estate)
+    {
+        try
+        {
+            EstateDTO? estateDTO = estate switch
+            {
+                Rowhouse rowhouse => MapDTO<Rowhouse, RowhouseDTO>(rowhouse),
+                Villa villa => MapDTO<Villa, VillaDTO>(villa),
+                Rental rental => MapDTO<Rental, RentalDTO>(rental),
+                Tenement tenement => MapDTO<Tenement, TenementDTO>(tenement),
+                Hospital hospital => MapDTO<Hospital, HospitalDTO>(hospital),
+                School school => MapDTO<School, SchoolDTO>(school),
+                University university => MapDTO<University, UniversityDTO>(university),
+                Shop shop => MapDTO<Shop, ShopDTO>(shop),
+                Factory factory => MapDTO<Factory, FactoryDTO>(factory),
+                Hotel hotel => MapDTO<Hotel, HotelDTO>(hotel),
+                Warehouse warehouse => MapDTO<Warehouse, WarehouseDTO>(warehouse),
+                _ => null
+            };
+
+            return estateDTO;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
