@@ -70,7 +70,7 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Method to add an eventmethod inputChanged to all text-, combo- and checkboxes.
     /// </summary>
-    public void AddChangeControlToControls()
+    private void AddChangeControlToControls()
     {
         IEnumerable<Entry> allEntries = this.GetVisualTreeDescendants().OfType<Entry>();
         IEnumerable<Picker> allPickers = this.GetVisualTreeDescendants().OfType<Picker>();

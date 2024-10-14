@@ -2,7 +2,6 @@
 using RealEstateMAUIApp.Enums;
 using RealEstateDTO;
 using UtilitiesLib;
-using RealEstateBLL.Estates;
 
 namespace RealEstateMAUIApp;
 

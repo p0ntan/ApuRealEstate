@@ -1,10 +1,8 @@
 ﻿// Created by Pontus Åkerberg 2024-10-05
+using RealEstateDTO;
 using RealEstateBLL;
 using RealEstateBLL.Estates;
 using RealEstateBLL.Manager;
-using RealEstateDAL;
-using RealEstateDTO;
-
 
 namespace RealEstateService;
 
@@ -172,29 +170,9 @@ public class EstateService
     /// <returns>True if saved, false if not</returns>
     public bool SaveToFile(string filePath)
     {
-        string fileExtension = Path.GetExtension(filePath).ToLower();
+        bool success = _estateManager.SaveToFile(filePath);
 
-        List<Estate> estateList = _estateManager.GetAll();  // Could be DTOs instead?
-        List<EstateDTO> estateDTOList = [];
-        EstateMapper mapper = new();
-
-        foreach (Estate item in estateList)
-        {
-            EstateDTO? estateDTO = mapper.MapEstateToDTO(item);
-
-            if (estateDTO != null)
-                estateDTOList.Add(estateDTO);
-        }
-
-        switch (fileExtension)
-        {
-            case ".json":
-                return FileHandler.SaveAsJson<List<EstateDTO>>(filePath, estateDTOList);
-            case ".xml":
-                return FileHandler.SaveAsXML<List<EstateDTO>>(filePath, estateDTOList);
-            default:
-                return false;
-        }
+        return success;
     }
 
     /// <summary>
@@ -204,30 +182,8 @@ public class EstateService
     /// <returns>True if opened and manager updated, false if not.</returns>
     public bool LoadFromFile(string filePath)
     {
-        string fileExtension = Path.GetExtension(filePath).ToLower();
+        bool success = _estateManager.LoadFromFile(filePath);
 
-        List<EstateDTO>? dtoList = fileExtension switch
-        {
-            ".json" => FileHandler.OpenJson<List<EstateDTO>>(filePath),
-            ".xml" => FileHandler.OpenXML<List<EstateDTO>>(filePath),
-            _ => null
-        };
-
-        if (dtoList == null)
-            return false;
-
-        ResetManager();
-
-        EstateMapper mapper = new();
-
-        foreach (EstateDTO dto in dtoList)
-        {
-            Estate? estate = mapper.MapDTOToEstate(dto);
-
-            if (estate != null)
-                _estateManager.Add(estate.ID, estate);
-        }
-
-        return true;
+        return success;
     }
 }

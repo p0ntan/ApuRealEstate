@@ -10,6 +10,49 @@ namespace RealEstateDAL;
 public class FileHandler
 {
     /// <summary>
+    /// Method to use for saving file, chooses the right filetype based on fileextension.
+    /// </summary>
+    /// <typeparam name="T">Type to serialize from.</typeparam>
+    /// <param name="filePath">Filepath to file</param>
+    /// <param name="objectToSerialize">Object to serialize and save</param>
+    /// <returns>True if file saved, false if not.</returns>
+    static public bool SaveToFile<T>(string filePath, T objectToSerialize)
+    {
+        string fileExtension = Path.GetExtension(filePath).ToLower();
+
+        switch (fileExtension)
+        {
+            case ".json":
+                return SaveAsJson<T>(filePath, objectToSerialize);
+            case ".xml":
+                return SaveAsXML<T>(filePath, objectToSerialize);
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Method to use for opening a file, chooses the right filetype based on fileextension.
+    /// </summary>
+    /// <typeparam name="T">Type to deserialize to.</typeparam>
+    /// <param name="filePath">Filepath to file</param>
+    /// <returns>Given types if loaded correctly, null if not..</returns>
+    static public T? OpenFile<T>(string filePath)
+    {
+        string fileExtension = Path.GetExtension(filePath).ToLower();
+
+        switch (fileExtension)
+        {
+            case ".json":
+                return OpenJson<T>(filePath);
+            case ".xml":
+                return OpenXML<T>(filePath);
+            default:
+                return default;
+        }
+    }
+
+    /// <summary>
     /// Saves the given type T to a JSON-file.
     /// </summary>
     /// <typeparam name="T">Type to serialize from.</typeparam>

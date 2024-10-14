@@ -1,7 +1,5 @@
 // Created by Pontus Åkerberg 2024-10-05
 using RealEstateDTO;
-using System.IO;
-using System.Reflection.Emit;
 
 namespace RealEstateMAUIApp;
 

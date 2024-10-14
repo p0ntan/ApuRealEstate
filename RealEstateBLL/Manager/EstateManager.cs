@@ -1,5 +1,7 @@
 ﻿// Created by Pontus Åkerberg 2024-09-10
 using RealEstateBLL.Estates;
+using RealEstateDAL;
+using RealEstateDTO;
 using System.Runtime.Serialization;
 
 namespace RealEstateBLL.Manager;
@@ -30,21 +32,6 @@ public class EstateManager : DictionaryManager<int, Estate>
     }
 
     /// <summary>
-    /// Get all Estates in the manager as a list.
-    /// </summary>
-    /// <returns>List with estates</returns>
-    public List<Estate> GetAll()
-    {
-        List<Estate> list = new List<Estate>();
-        foreach (var item in Dictionary)
-        {
-            list.Add(item.Value);
-        }
-
-        return list;
-    }
-
-    /// <summary>
     /// Method to filter estates by country and returns a dictionary with the key of a country as in enum Countries and a list of estates.
     /// </summary>
     /// <param name="country">Country to filter</param>
@@ -65,5 +52,55 @@ public class EstateManager : DictionaryManager<int, Estate>
         dictionary.Add(country, listOfEstates);
 
         return dictionary;
+    }
+
+    /// <summary>
+    /// Method to save the state of the estatemanager to a file.
+    /// </summary>
+    /// <param name="filePath">Filepath to file.</param>
+    /// <returns>True if saved, false if not.</returns>
+    public bool SaveToFile(string filePath)
+    {
+        List<EstateDTO> estateDTOList = [];
+        EstateMapper mapper = new();
+
+        foreach (Estate item in Dictionary.Values)
+        {
+            EstateDTO? estateDTO = mapper.MapEstateToDTO(item);
+
+            if (estateDTO != null)
+                estateDTOList.Add(estateDTO);
+        }
+
+        bool success = FileHandler.SaveToFile<List<EstateDTO>>(filePath, estateDTOList);
+
+        return success;
+    }
+
+    /// <summary>
+    /// Method to load estates into the estatemanager from a file.
+    /// </summary>
+    /// <param name="filePath">Filepath to file</param>
+    /// <returns>True if loaded, false if not.</returns>
+    public bool LoadFromFile(string filePath)
+    {
+        List<EstateDTO>? dtoList = FileHandler.OpenFile<List<EstateDTO>>(filePath);
+
+        if (dtoList == null)
+            return false;
+
+        DeleteAll();  // Reset current manager by removing all items.
+
+        EstateMapper mapper = new();
+
+        foreach (EstateDTO dto in dtoList)
+        {
+            Estate? estate = mapper.MapDTOToEstate(dto);
+
+            if (estate != null)
+                Add(estate.ID, estate);
+        }
+
+        return true;
     }
 }

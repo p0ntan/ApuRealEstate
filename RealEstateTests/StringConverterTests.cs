@@ -1,7 +1,11 @@
+// Created by Pontus Åkerberg 2024-10-09
 using UtilitiesLib;
 
 namespace RealEstateTests;
 
+/// <summary>
+/// Runs some unit tests on the string converter methods.
+/// </summary>
 [TestClass]
 public class StringConverterTests
 {
