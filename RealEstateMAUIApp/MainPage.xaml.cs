@@ -4,6 +4,7 @@ using RealEstateMAUIApp.Services;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
 using UtilitiesLib;
+using System.Diagnostics;
 
 namespace RealEstateMAUIApp;
 
@@ -203,7 +204,7 @@ public partial class MainPage : ContentPage
 
         if (_formHasChanges)
         {
-            bool wantsToSave = await DisplayAlert("Form has changes.", "Save before changing estate?", "Yes", "No");
+            bool wantsToSave = await DisplayAlert("Estate has changes", "Keep changes for the estate in form before changing estate?", "Yes", "No");
 
             if (wantsToSave)
             {
@@ -518,18 +519,14 @@ public partial class MainPage : ContentPage
     /// <returns>True if changes are handled, false if not.</returns>
     private async Task<bool> HandleUnsavedChanges()
     {
-        // String is changed if there are changes in the current form
-        string changesInForm = string.Empty;
+        string answer = await DisplayActionSheet("Save changes?", "Cancel", null, "Yes", "No");
 
-        if (_formHasChanges)
-            changesInForm = "\n\n(Includes the current estate in the form.)";
-
-        bool wantsToSave = await DisplayAlert("Unsaved changes", "Do you want to save your unsaved changes?" + changesInForm, "Yes", "No");
-
-        if (wantsToSave)
+        if (answer == null || answer == "Cancel")
+            return false;
+        else if (answer == "Yes")
             return await SaveChanges();  // Returns false if not saved
 
-        return true;
+        return true;  // Same as pressing no, then changes are handles since they shouln't be saved.
     }
 
     /// <summary>
@@ -555,9 +552,7 @@ public partial class MainPage : ContentPage
                 return false;
         }
 
-        EstateService eService = EstateService.GetInstance();
-
-        if (!eService.SaveToFile(filePath))
+        if (!EstateService.GetInstance().SaveToFile(filePath))
         {
             await DisplayAlert("", "Data not saved.", "Ok");
             return false;
@@ -942,14 +937,10 @@ public partial class MainPage : ContentPage
             EstateDTO estateDTO = CreateEstateDTO();
 
             bool success = false;
-            bool isNew = false;
             int estateID = estateDTO.ID;
 
             if (estateID == -1)  // Estate is new if id is -1
-            {
                 (success, estateID) = EstateService.GetInstance().CreateEstate(estateDTO);
-                isNew = success;
-            }
             else
                 success = EstateService.GetInstance().UpdateEstate(estateDTO);
 
