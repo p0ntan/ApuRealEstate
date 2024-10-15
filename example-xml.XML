@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfEstateDTO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <EstateDTO xsi:type="HotelDTO">
+    <ID>10000</ID>
+    <LegalForm>0</LegalForm>
+    <Address>
+      <Street>Sovgatan 212</Street>
+      <City>Stockholm</City>
+      <ZipCode>11921</ZipCode>
+      <Country>164</Country>
+    </Address>
+    <Seller>
+      <FirstName>Will</FirstName>
+      <LastName>Svensson</LastName>
+      <Address>
+        <Street>Storgatan 12</Street>
+        <City>Stockholm</City>
+        <ZipCode>12509</ZipCode>
+        <Country>164</Country>
+      </Address>
+    </Seller>
+    <Buyer>
+      <FirstName>Karl</FirstName>
+      <LastName>Karlsson</LastName>
+      <Address>
+        <Street>Lillvägen 12</Street>
+        <City>Stockholm</City>
+        <ZipCode>12581</ZipCode>
+        <Country>164</Country>
+      </Address>
+      <Payment xsi:type="PaypalDTO">
+        <Amount>102159125</Amount>
+        <Email>karl@karlsson.se</Email>
+      </Payment>
+    </Buyer>
+    <YearBuilt>2005</YearBuilt>
+    <YearlyRevenue>201921</YearlyRevenue>
+    <NumberOfBeds>300</NumberOfBeds>
+    <NumberOfParkingSpots>160</NumberOfParkingSpots>
+  </EstateDTO>
+  <EstateDTO xsi:type="HospitalDTO">
+    <ID>10001</ID>
+    <LegalForm>0</LegalForm>
+    <Address>
+      <Street>Sykveien 15</Street>
+      <City>Oslo</City>
+      <ZipCode>1291</ZipCode>
+      <Country>127</Country>
+    </Address>
+    <Seller>
+      <FirstName>Oslo</FirstName>
+      <LastName>Kommune</LastName>
+      <Address>
+        <Street>Kommunestien 2</Street>
+        <City>Oslo</City>
+        <ZipCode>0915</ZipCode>
+        <Country>127</Country>
+      </Address>
+    </Seller>
+    <Buyer>
+      <FirstName>Drammen</FirstName>
+      <LastName>Kommune</LastName>
+      <Address>
+        <Street>Drammenveien 2</Street>
+        <City>Drammen</City>
+        <ZipCode>1209</ZipCode>
+        <Country>127</Country>
+      </Address>
+      <Payment xsi:type="BankDTO">
+        <Amount>12501295012.2</Amount>
+        <Name>Norskbank</Name>
+        <AccountNumber>1025.12.112612</AccountNumber>
+      </Payment>
+    </Buyer>
+    <EstablishedYear>1989</EstablishedYear>
+    <NumberOfBuildings>12</NumberOfBuildings>
+    <NumberOfBeds>1015</NumberOfBeds>
+    <NumberOfParkingSpots>1500</NumberOfParkingSpots>
+  </EstateDTO>
+  <EstateDTO xsi:type="UniversityDTO">
+    <ID>10002</ID>
+    <LegalForm>0</LegalForm>
+    <Address>
+      <Street>School St. 12</Street>
+      <City>London</City>
+      <ZipCode>1095</ZipCode>
+      <Country>181</Country>
+    </Address>
+    <Seller>
+      <FirstName>Bob</FirstName>
+      <LastName>Dumbeldor</LastName>
+      <Address>
+        <Street>Hogwarts Av. 2</Street>
+        <City>Hogwarts</City>
+        <ZipCode>12059</ZipCode>
+        <Country>181</Country>
+      </Address>
+    </Seller>
+    <Buyer>
+      <FirstName>Jack</FirstName>
+      <LastName>Ripper</LastName>
+      <Address>
+        <Street>Main St. 12</Street>
+        <City>Manchester</City>
+        <ZipCode>12592</ZipCode>
+        <Country>181</Country>
+      </Address>
+      <Payment xsi:type="WesternUnionDTO">
+        <Amount>1250916</Amount>
+        <Name>Jack</Name>
+        <Email>jack@ripper.com</Email>
+      </Payment>
+    </Buyer>
+    <EstablishedYear>1805</EstablishedYear>
+    <NumberOfBuildings>28</NumberOfBuildings>
+    <CampusArea>12951</CampusArea>
+    <StudentCapacity>1126</StudentCapacity>
+  </EstateDTO>
+  <EstateDTO xsi:type="RentalDTO">
+    <ID>10003</ID>
+    <LegalForm>2</LegalForm>
+    <Address>
+      <Street>Bovägen 122</Street>
+      <City>Umeå</City>
+      <ZipCode>91258</ZipCode>
+      <Country>164</Country>
+    </Address>
+    <Seller>
+      <FirstName>Sven</FirstName>
+      <LastName>Svensson</LastName>
+      <Address>
+        <Street>Bovägen 12</Street>
+        <City>Umeå</City>
+        <ZipCode>91258</ZipCode>
+        <Country>164</Country>
+      </Address>
+    </Seller>
+    <Buyer>
+      <FirstName>Peter</FirstName>
+      <LastName>Petersson</LastName>
+      <Address>
+        <Street>Petersväg 1</Street>
+        <City>Uppsala</City>
+        <ZipCode>12591</ZipCode>
+        <Country>164</Country>
+      </Address>
+    </Buyer>
+    <Area>78</Area>
+    <Bedrooms>2</Bedrooms>
+    <OnFloor>5</OnFloor>
+    <MonthlyCost>9050</MonthlyCost>
+  </EstateDTO>
+</ArrayOfEstateDTO>

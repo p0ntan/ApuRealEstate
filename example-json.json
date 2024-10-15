@@ -1,0 +1,228 @@
+{
+  "$type": "System.Collections.Generic.List`1[[RealEstateDTO.EstateDTO, RealEstateDTO]], System.Private.CoreLib",
+  "$values": [
+    {
+      "$type": "RealEstateDTO.HotelDTO, RealEstateDTO",
+      "NumberOfBeds": 300,
+      "NumberOfParkingSpots": 160,
+      "YearBuilt": 2005,
+      "YearlyRevenue": 201921,
+      "ID": 20000,
+      "LegalForm": 0,
+      "Address": {
+        "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+        "Street": "Sovgatan 212",
+        "City": "Stockholm",
+        "ZipCode": "11921",
+        "Country": 164
+      },
+      "Seller": {
+        "$type": "RealEstateDTO.SellerDTO, RealEstateDTO",
+        "FirstName": "Will",
+        "LastName": "Svensson",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Storgatan 12",
+          "City": "Stockholm",
+          "ZipCode": "12509",
+          "Country": 164
+        }
+      },
+      "Buyer": {
+        "$type": "RealEstateDTO.BuyerDTO, RealEstateDTO",
+        "Payment": {
+          "$type": "RealEstateDTO.PaypalDTO, RealEstateDTO",
+          "Email": "karl@karlsson.se",
+          "Amount": 102159125.0
+        },
+        "FirstName": "Karl",
+        "LastName": "Karlsson",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Lillvägen 12",
+          "City": "Stockholm",
+          "ZipCode": "12581",
+          "Country": 164
+        }
+      }
+    },
+    {
+      "$type": "RealEstateDTO.HospitalDTO, RealEstateDTO",
+      "NumberOfBeds": 1015,
+      "NumberOfParkingSpots": 1500,
+      "EstablishedYear": 1989,
+      "NumberOfBuildings": 12,
+      "ID": 20001,
+      "LegalForm": 0,
+      "Address": {
+        "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+        "Street": "Legeveien 259",
+        "City": "Lörenskog",
+        "ZipCode": "1252",
+        "Country": 127
+      },
+      "Seller": {
+        "$type": "RealEstateDTO.SellerDTO, RealEstateDTO",
+        "FirstName": "Oslo",
+        "LastName": "Kommune",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Kommunestien 2",
+          "City": "Oslo",
+          "ZipCode": "0915",
+          "Country": 127
+        }
+      },
+      "Buyer": {
+        "$type": "RealEstateDTO.BuyerDTO, RealEstateDTO",
+        "Payment": {
+          "$type": "RealEstateDTO.BankDTO, RealEstateDTO",
+          "Name": "Norskbank",
+          "AccountNumber": "1025.12.112612",
+          "Amount": 12501295012.0
+        },
+        "FirstName": "Drammen",
+        "LastName": "Kommune",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Drammenveien 2",
+          "City": "Drammen",
+          "ZipCode": "1209",
+          "Country": 127
+        }
+      }
+    },
+    {
+      "$type": "RealEstateDTO.UniversityDTO, RealEstateDTO",
+      "CampusArea": 12951,
+      "StudentCapacity": 1126,
+      "EstablishedYear": 1805,
+      "NumberOfBuildings": 28,
+      "ID": 20002,
+      "LegalForm": 0,
+      "Address": {
+        "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+        "Street": "School St. 12",
+        "City": "London",
+        "ZipCode": "1095",
+        "Country": 181
+      },
+      "Seller": {
+        "$type": "RealEstateDTO.SellerDTO, RealEstateDTO",
+        "FirstName": "Bob",
+        "LastName": "Dumbeldor",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Hogwarts Av. 2",
+          "City": "Hogwarts",
+          "ZipCode": "12059",
+          "Country": 181
+        }
+      },
+      "Buyer": {
+        "$type": "RealEstateDTO.BuyerDTO, RealEstateDTO",
+        "Payment": {
+          "$type": "RealEstateDTO.WesternUnionDTO, RealEstateDTO",
+          "Name": "Jack",
+          "Email": "jack@ripper.com",
+          "Amount": 1250916.0
+        },
+        "FirstName": "Jack",
+        "LastName": "Ripper",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Main St. 12",
+          "City": "Manchester",
+          "ZipCode": "12592",
+          "Country": 181
+        }
+      }
+    },
+    {
+      "$type": "RealEstateDTO.RentalDTO, RealEstateDTO",
+      "OnFloor": 5,
+      "MonthlyCost": 9050,
+      "Area": 78,
+      "Bedrooms": 2,
+      "ID": 20003,
+      "LegalForm": 2,
+      "Address": {
+        "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+        "Street": "Bovägen 12",
+        "City": "Umeå",
+        "ZipCode": "91258",
+        "Country": 164
+      },
+      "Seller": {
+        "$type": "RealEstateDTO.SellerDTO, RealEstateDTO",
+        "FirstName": "Sven",
+        "LastName": "Svensson",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Bovägen 12",
+          "City": "Umeå",
+          "ZipCode": "91258",
+          "Country": 164
+        }
+      },
+      "Buyer": {
+        "$type": "RealEstateDTO.BuyerDTO, RealEstateDTO",
+        "Payment": null,
+        "FirstName": "Peter",
+        "LastName": "Petersson",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Petersväg 1",
+          "City": "Uppsala",
+          "ZipCode": "12591",
+          "Country": 164
+        }
+      }
+    },
+    {
+      "$type": "RealEstateDTO.WarehouseDTO, RealEstateDTO",
+      "StorageArea": 2599,
+      "NumberOfLoadingDocks": 4,
+      "YearBuilt": 1980,
+      "YearlyRevenue": 2151261,
+      "ID": 20004,
+      "LegalForm": 0,
+      "Address": {
+        "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+        "Street": "Lagerestrada 2",
+        "City": "Lisboa",
+        "ZipCode": "1209",
+        "Country": 137
+      },
+      "Seller": {
+        "$type": "RealEstateDTO.SellerDTO, RealEstateDTO",
+        "FirstName": "Pablo",
+        "LastName": "Gonzales",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Loca",
+          "City": "Alvor",
+          "ZipCode": "1092",
+          "Country": 137
+        }
+      },
+      "Buyer": {
+        "$type": "RealEstateDTO.BuyerDTO, RealEstateDTO",
+        "Payment": {
+          "$type": "RealEstateDTO.PaypalDTO, RealEstateDTO",
+          "Email": "hans@kleine.de",
+          "Amount": 1250195.0
+        },
+        "FirstName": "Hans",
+        "LastName": "Kleine",
+        "Address": {
+          "$type": "RealEstateDTO.AddressDTO, RealEstateDTO",
+          "Street": "Strasse 2",
+          "City": "Berlin",
+          "ZipCode": "215908",
+          "Country": 63
+        }
+      }
+    }
+  ]
+}
