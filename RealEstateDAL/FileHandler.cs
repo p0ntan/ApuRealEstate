@@ -59,7 +59,7 @@ public class FileHandler
     /// <param name="filePath">Filepath to file</param>
     /// <param name="objectToSerialize">Object to serialize and save</param>
     /// <returns>True if file created, false if not.</returns>
-    static public bool SaveAsJson<T>(string filePath, T objectToSerialize)
+    static private bool SaveAsJson<T>(string filePath, T objectToSerialize)
     {
         try
         {
@@ -91,7 +91,7 @@ public class FileHandler
     /// <typeparam name="T">Type to deserialize to.</typeparam>
     /// <param name="filePath">Filepath to file</param>
     /// <returns>The given deserialized type, or default (null) if not.</returns>
-    static public T? OpenJson<T>(string filePath)
+    static private T? OpenJson<T>(string filePath)
     {
         try
         {
@@ -122,7 +122,7 @@ public class FileHandler
     /// <param name="filePath">Filepath to file</param>
     /// <param name="objectToSerialize">Object to serialize and save</param>
     /// <returns>True if file created, false if not.</returns>
-    static public bool SaveAsXML<T>(string filePath, T objectToSerialize)
+    static private bool SaveAsXML<T>(string filePath, T objectToSerialize)
     {
         try
         {
@@ -148,7 +148,7 @@ public class FileHandler
     /// <typeparam name="T">Type to deserialize to.</typeparam>
     /// <param name="filePath">Filepath to file</param>
     /// <returns>The given deserialized type, or default (null) if not.</returns>
-    static public T? OpenXML<T>(string filePath)
+    static private T? OpenXML<T>(string filePath)
     {
         try
         {

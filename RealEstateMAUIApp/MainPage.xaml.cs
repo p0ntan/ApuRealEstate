@@ -4,7 +4,6 @@ using RealEstateMAUIApp.Services;
 using RealEstateMAUIApp.Enums;
 using RealEstateService;
 using UtilitiesLib;
-using System.Diagnostics;
 
 namespace RealEstateMAUIApp;
 
@@ -212,6 +211,8 @@ public partial class MainPage : ContentPage
 
                 if (!estateSaved)
                     return;
+
+                ExistingEstates.UpdateList();
             }
         }
 
@@ -242,13 +243,13 @@ public partial class MainPage : ContentPage
         switch (estateType)
         {
             case EstateType.Residential:
-                UpdateGUIForResidentials();
+                UpdateGUIForEstateType<ResidentialType>("Area", "Bedrooms");
                 break;
             case EstateType.Commercial:
-                UpdateGUIForCommercials();
+                UpdateGUIForEstateType<CommercialType>("Year Built", "Yearly Revenue");
                 break;
             case EstateType.Institutional:
-                UpdateGUIForInstitutionals();
+                UpdateGUIForEstateType<InstitutionalType>("Established Year", "No. of Buildings");
                 break;
         }
     }
@@ -590,11 +591,18 @@ public partial class MainPage : ContentPage
     /// <returns>Filepath as string</returns>
     private async Task<string?> GetFilePathUsingDialog(Dictionary<string, List<string>> fileTypes)
     {
-        string filePath = string.Empty;
-        var dialogService = new SaveFileDialogService();
-        string? selectedFilePath = await dialogService.ShowSaveFileDialogAsync(fileTypes);
+        try
+        {
+            string filePath = string.Empty;
+            var dialogService = new SaveFileDialogService();
+            string? selectedFilePath = await dialogService.ShowSaveFileDialogAsync(fileTypes);
 
-        return selectedFilePath;
+            return selectedFilePath;
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 
     /// <summary>
@@ -788,45 +796,18 @@ public partial class MainPage : ContentPage
     #region Update GUI methods when changing estate type
 
     /// <summary>
-    /// Updates the GUI with details specific for all Residentials.
+    /// Updates the GUI with labels and specific for a the given type of estate (ex ResidentialType).
     /// </summary>
-    private void UpdateGUIForResidentials()
+    /// <typeparam name="TEstateType">The type of estate, ex. RestidentialType, CommercialType.</typeparam>
+    /// <param name="labelOne">String for label one</param>
+    /// <param name="labelTwo">String for label two</param>
+    private void UpdateGUIForEstateType<TEstateType>(string labelOne, string labelTwo) where TEstateType : Enum
     {
-        lblType1.Text = "Area";
-        lblType2.Text = "Bedrooms";
+        lblType1.Text = labelOne;
+        lblType2.Text = labelTwo;
 
-        // Changing specific type datasource triggers methods for updating the specifics
-        // through the event cmbSpecificType_SelectedIndexChanged method.
-        SpecificTypePicker.ItemsSource = Enum.GetNames(typeof(ResidentialType));
-        SpecificTypePicker.SelectedIndex = 0;
-    }
-
-    /// <summary>
-    /// Updates the GUI with details specific for all Commercials.
-    /// </summary>
-    private void UpdateGUIForCommercials()
-    {
-
-        lblType1.Text = "Year Built";
-        lblType2.Text = "Yearly Revenue";
-
-        // Changing specific type datasource triggers methods for updating the specifics
-        // through the event cmbSpecificType_SelectedIndexChanged method.
-        SpecificTypePicker.ItemsSource = Enum.GetNames(typeof(CommercialType));
-        SpecificTypePicker.SelectedIndex = 0;
-    }
-
-    /// <summary>
-    /// Updates the GUI with details specific for all Institutionals.
-    /// </summary>
-    private void UpdateGUIForInstitutionals()
-    {
-        lblType1.Text = "Established Year";
-        lblType2.Text = "No. of Buildings";
-
-        // Changing specific type datasource triggers methods for updating the specifics
-        // through the event cmbSpecificType_SelectedIndexChanged method.
-        SpecificTypePicker.ItemsSource = Enum.GetNames(typeof(InstitutionalType));
+        // Setting the ItemsSource to the names of the given EstateType (ResidentialType etc.)
+        SpecificTypePicker.ItemsSource = Enum.GetNames(typeof(TEstateType));
         SpecificTypePicker.SelectedIndex = 0;
     }
 

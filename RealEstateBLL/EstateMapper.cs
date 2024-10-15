@@ -95,8 +95,6 @@ public class EstateMapper
             cfg.CreateMap<WarehouseDTO, Warehouse>();
         });
 
-        config.AssertConfigurationIsValid();
-
         _mapper = config.CreateMapper();
     }
 
